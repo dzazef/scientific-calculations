@@ -1,6 +1,9 @@
 # Lista 1: zadanie 5
 # autor: Józef Piechaczek
 
+# type - typ dla którego wykonujemy obliczenia
+# S - wartość iloczynu skalarnego
+
 function zad5_a(type)
     x::Array{type, 1} = [2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957]
     y::Array{type, 1} = [1486.2497, 878366.9879, -22.37492, 4773714.647, 0.000185049]
@@ -21,6 +24,10 @@ function zad5_b(type)
     return S
 end
 
+# results - tablica przechowująca wartości mnożenia
+# counter - licznik pozwalający na określenie przedziału pomiędzy liczbami dodatnimi i ujemnymi
+# plus - suma liczb dodatnich
+# minus - suma liczb ujemnych
 function zad5_c(type)
     x::Array{type, 1} = [2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957]
     y::Array{type, 1} = [1486.2497, 878366.9879, -22.37492, 4773714.647, 0.000185049]
@@ -48,6 +55,10 @@ function zad5_c(type)
     return plus + minus
 end
 
+# results - tablica przechowująca wartości mnożenia
+# counter - licznik pozwalający na określenie przedziału pomiędzy liczbami dodatnimi i ujemnymi
+# plus - suma liczb dodatnich
+# minus - suma liczb ujemnych
 function zad5_d(type)
     x::Array{type, 1} = [2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957]
     y::Array{type, 1} = [1486.2497, 878366.9879, -22.37492, 4773714.647, 0.000185049]

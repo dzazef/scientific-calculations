@@ -1,6 +1,9 @@
 # Lista 1: zadanie 3
 # autor: Józef Piechaczek
 
+# delta - wykonywany krok
+# n - rozpatrywana liczba w danej iteracji
+
 delta1 = Float64(2^(-52))
 
 function zad3_1()

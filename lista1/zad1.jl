@@ -1,14 +1,18 @@
 # Lista 1: zadanie 1
 # autor: Józef Piechaczek
 
+
+# type - typ dla którego wykonujemy obliczenia
+# i - rozpatrywana liczba w danej iteracji
+
 function macheps(type)
     i = type(1)
-        prev = type(0)
+        previous = type(0)
     while(1 + i > 1) 
-        prev = i
+        previous = i
         i /= 2
     end
-    prev
+    previous
 end
 
 println("MyEps: ", macheps(Float16), " Macheps: ", eps(Float16))
@@ -17,12 +21,12 @@ println("MyEps: ", macheps(Float64), " Macheps: ", eps(Float64))
 
 function eta(type)
     i = type(1)
-    prev = type(0)
+    previous = type(0)
     while(i > 0)
-        prev = i
+        previous = i
         i /= 2
     end
-    prev
+    previous
 end
 
 println("MyEta: ", eta(Float16), " Eta: ", nextfloat(Float16(0.0)))
@@ -31,12 +35,12 @@ println("MyEta: ", eta(Float64), " Eta: ", nextfloat(Float64(0.0)))
 
 function inf(type)
     i = prevfloat(type(1.0))
-    prev = type(0)
+    previous = type(0)
     while(!isinf(i))
-        prev = i
+        previous = i
         i *= 2
     end
-    prev
+    previous
 end
 
 println("MyMax: ", inf(Float16), " Max: ", floatmax(Float16))
