@@ -51,7 +51,6 @@ function zad5_c(type)
     for i = 1:counter
         minus = minus + results[i]
     end
-
     return plus + minus
 end
 
@@ -60,7 +59,7 @@ end
 # plus - suma liczb dodatnich
 # minus - suma liczb ujemnych
 function zad5_d(type)
-    x::Array{type, 1} = [2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957]
+    x::Array{type, 1} = [2.718281828, -3.141592654, 1.414213562, 0.577215664, 0.301029995]
     y::Array{type, 1} = [1486.2497, 878366.9879, -22.37492, 4773714.647, 0.000185049]
     S::type = 0
     results::Array{type, 1} = []
@@ -78,16 +77,13 @@ function zad5_d(type)
     while (results[counter] < 0 && counter <= length(results))
         counter = counter + 1
     end
-
     for i = (counter-1):-1:1
         minus = minus + results[i]
     end
-
     for i = counter:length(results)
         plus = plus + results[i]
     end
-
-    return plus + minus
+    return minus + plus
 end
 
 

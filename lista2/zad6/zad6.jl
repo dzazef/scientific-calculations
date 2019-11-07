@@ -1,12 +1,19 @@
-# f(n, x0, c) = n==0 ? x0 : f(n-1, x0, c)^2 + c
+# Lista 2: zadanie 6
+# autor: Józef Piechaczek
+
+using Printf
 
 function x(n, x0, c)
     x = x0
     for i = 0:(n-1)
-        println("i: $(i), val: $(x)")
+        # do LATEX
+        # @printf("%.6e\n", x) 
+        println("$(x)")
         x = x^2 + c
     end
-    println("i: $(n), val: $(x)")
+    # do LATEX
+    # @printf("%.6e\n", x)
+    println("$(x)")
 end
 
 values = [
