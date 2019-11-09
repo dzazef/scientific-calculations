@@ -1,17 +1,24 @@
-# Lista 2: Zadanie 3
+# Lista 2: zadanie 3
 # Autor: Józef Piechaczek
 
 include("hilb.jl")
 include("matcond.jl")
 using LinearAlgebra, Printf
 
+# wartości dla losowej macierzy o zadanym cond
 c = Float64[1, 1e1, 1e3, 1e7, 1e12, 1e16]
 n = Int[5, 10, 20]
 
+# algorytmy rozwiązywania układu
 gauss_elimination(A, b) = A\b
 inversion(A, b) = inv(A)*b
+
+# błąd względny wyniku
 error = (v_app, v_real) -> norm(v_app - v_real) / norm(v_real)
 
+# Główna funkcja programu
+# A - macierz wejściowa
+# n - wielkość macierzy, wielkość x
 function get_result(A, n)
     x = [1 for i = 1:n]
     b = A*x
@@ -31,6 +38,7 @@ function get_result(A, n)
     # println("\\\\\n\\hline")
 end
 
+# Wywołanie głównej funkcji dla macierzy Hilberta
 function zad3_hilbert() 
     for i in 2:20
         print("$(i)x$(i) & ")
@@ -38,6 +46,7 @@ function zad3_hilbert()
     end
 end
 
+# Wywołanie głównej funkcji dla macierzy losowej o danym cond
 function zad3_cond()
     for i in c
         for j in n

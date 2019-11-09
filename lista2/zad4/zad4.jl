@@ -3,6 +3,7 @@
 
 using Polynomials, Printf;
 
+# współczynniki oryginalnego wielomianu
 p_coeff1=reverse([1, -210.0, 20615.0,-1256850.0,
         53327946.0,-1672280820.0, 40171771630.0, -756111184500.0,          
         11310276995381.0, -135585182899530.0,
@@ -13,6 +14,7 @@ p_coeff1=reverse([1, -210.0, 20615.0,-1256850.0,
         13803759753640704000.0,      -8752948036761600000.0,
         2432902008176640000.0])
 
+# współczynniki zmodyfikowanego wielomianu
 p_coeff2=reverse([1, -210.0-2^(-23), 20615.0,-1256850.0,
         53327946.0,-1672280820.0, 40171771630.0, -756111184500.0,          
         11310276995381.0, -135585182899530.0,
@@ -23,14 +25,10 @@ p_coeff2=reverse([1, -210.0-2^(-23), 20615.0,-1256850.0,
         13803759753640704000.0,      -8752948036761600000.0,
         2432902008176640000.0])
 
-function p(x)
-    res = 1.0;
-    for i = 1:20
-        res = res * (x - i)
-    end
-    res
-end
 
+# Funkcja obliczające podane w zadaniu wartości dla wielomianów p1 i p2
+# p1 - wielomian w postaci naturalnej
+# p2 - wielomian jako produkt (x-k) dla k od 1 do 20
 function zad4(p1, p2)
     p1_roots = reverse(Polynomials.roots(p1))
     # println(p1_roots)

@@ -3,6 +3,9 @@
 
 using Printf
 
+# równanie rekurencyjne
+# n - liczba iteracji
+# x0, c - parametry równania
 function x(n, x0, c)
     x = x0
     for i = 0:(n-1)
@@ -16,6 +19,7 @@ function x(n, x0, c)
     println("$(x)")
 end
 
+# wartości dla których wykonujemy eksperymenty
 values = [
     [-2, 1],
     [-2, 2],

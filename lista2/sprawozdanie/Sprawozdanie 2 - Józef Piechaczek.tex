@@ -14,8 +14,8 @@
 basicstyle=\small\ttfamily,
 breaklines=true
 }
-\addtolength{\oddsidemargin}{-.5in}
-\addtolength{\evensidemargin}{-.5in}
+\addtolength{\oddsidemargin}{-.8in}
+\addtolength{\evensidemargin}{-.8in}
 \addtolength{\textwidth}{1.75in}
 \addtolength{\topmargin}{-.7in}
 \addtolength{\textheight}{1.75in}
@@ -70,7 +70,7 @@ Wyniki eksperymentu przedstawia poniższa tabela:
 \end{table}
 
 \subsubsection*{Wnioski:}
-Patrząc na tabelę możemy zauważyć, że wartości dla \textbf{Float32} nie uległy zmianie dla żadnego z algorytmów. Wynika to z faktu iż 
+Patrząc na tabelę możemy zauważyć, że wartości dla \textbf{Float32} nie uległy zmianie dla żadnego z algorytmów. Wynika to z faktu iż liczba pojedynczej precyzji zawiera około 7-8 cyfr znaczących, zatem zmiana na dziesiątej pozycji nie wpływa na wynik. Dla \textbf{Float64} możemy zauważyć znaczącą zmianę. Po pierwsze algorytmy \textbf{3} i \textbf{4} nie zwracają już wartości 0, która powiązana jest z prostopadłością wektorów. Możemy również dostrzec, że wyniki dla wszystkich czterech algorytmów są mocno zbliżone (dla \textbf{3} i \textbf{4} identyczne). Sugeruje to, że uzyskany wynik jest bliski poprawnego wyniku. Znacząca zmiana wyników jednak sugeruje, że zadanie obliczania iloczynu skalarnego jest źle uwarunkowane. W takim wypadku aby uzyskać dokładny wynik należy skorzystać z arytmetyki o jak najwyższej precyzji.
 
 
 \section{Zadanie 2}
@@ -104,10 +104,62 @@ Zadanie 2 polega na narysowaniu wykresu funkcji $f(x) = e^x*ln(1+e^{-x})$ w co n
 \subsubsection*{Granica:}
 \begin{align*}
 lim_{x \to \infty} e^x ln(1+e^{-x}) = lim_{x \to \infty} \frac{ln(1+e^{-x})}{e^{-x}} \stackrel{\text{z l’Hospitala}}{=} lim_{x \to \infty} \frac{-\frac{1}{e^x + 1}}{-e^{-x}} \\
-= lim_{x \to \infty} \frac{e^{-x}}{e^x + 1} = lim_{x \to \infty} e^{-x} \frac{1}{lim_{x \to \infty} (e^x + 1)} = 0 \cdot 0 = 0
+= lim_{x \to \infty} \frac{1}{(e^x + 1)(e^{-x})} = lim_{x \to \infty} \frac{1}{1 + e^{-x}} = 1 
 \end{align*}
 
 \subsubsection*{Wnioski:}
+Po obliczeniu granicy dla funkcji f wiemy, że wykres powinien dążyć do wartości $1$. Patrząc na otrzymane wykresy możemy zauważyć następujące obserwacje. (1) Dla około $x=32$  możemy zobaczyć pojawiające się zaburzenie, które szybko zmienia wartość, a następnie wykres przyjmuje już do końca wartość 0. (2) Przy próbie wygenerowania wartości dla dużych wartości x, przy około $x=710$ w bibliotece PyPlot pojawił się błąd \texttt{overflow encountered in power} oraz \texttt{invalid value encountered in multiply}. Obserwację 1 można wyjaśnić patrząc na tabelę wartości $e^{-x}$ oraz $1 + e^{-x}$:
+\newpage
+\begin{table}[h!]
+	\small
+	\centering
+    \label{tab:table101}
+    \begin{tabular}{|c|c|c|}
+    		\hline
+    		$n$ & $e^{-x}$ & $1 + e^{-x}$\\
+    		\hline
+30 & 9.35762297e-14 & 1.0000000000000935e+00 \\
+\hline
+31 & 3.44247711e-14 & 1.0000000000000344e+00 \\
+\hline
+32 & 1.26641655e-14 & 1.0000000000000127e+00 \\
+\hline
+33 & 4.65888615e-15 & 1.0000000000000047e+00 \\
+\hline
+34 & 1.71390843e-15 & 1.0000000000000018e+00 \\
+\hline
+35 & 6.30511676e-16 & 1.0000000000000007e+00 \\
+\hline
+36 & 2.31952283e-16 & 1.0000000000000002e+00 \\
+\hline
+37 & 8.53304763e-17 & 1.0000000000000000e+00 \\
+\hline      	
+    \end{tabular}
+\end{table}
+
+Dla rosnącego x wartość wyrażenia $e^{-x}$ zbliża się do wartości 0. Wyrażenie to po dodaniu do wartości 1 traci coraz to więcej informacji, a pojawiający się błąd rośnie również wraz z wzrostem wartości $e^x$. W momencie gdy 1 całkowicie "pochłania" wartość wyrażenia, logarytm osiąga wartość 0, czego skutkiem jest wartość 0 dla $x<710$. Aby dowiedzieć się co się dzieje dla wartości $x=710$ oraz wyższych posłuże się następującą tabelą:
+\begin{table}[h!]
+	\small
+	\centering
+    \label{tab:table12}
+    \begin{tabular}{|c|c|}
+    		\hline
+    		$n$ & $e^{x}$\\
+\hline
+707 & 1.11224050e+307\\
+\hline
+708 & 3.02338314e+307\\
+\hline
+709 & 8.21840746e+307\\
+\hline
+710 & Inf\\
+\hline
+711 & Inf\\
+\hline      	
+    \end{tabular}
+\end{table}
+
+Dla odpowiednio wysokich x wartość wyrażenia $e^x$ jest na tyle duża, że wykracza poza wartość maksymalną dla arytmetyki. Wyrażenie wtedy przyjmuje postać $\infty \cdot 0$ co sprawia że nie da się go policzyć. 
 
 \section{Zadanie 3}
 Zadanie 3 polega na rozwiązaniu układu równań liniowych $Ax = b$ dla danej macierzy współczynników $A \in \mathbf{R}^{n \times n}$ i wektora prawych stron $b \in\mathbf{R}^{n} $.
@@ -197,47 +249,48 @@ Zadanie 3 polega na rozwiązaniu układu równań liniowych $Ax = b$ dla danej m
 		\hline
 		Size & Rank & Cond & Gauss & Inversion\\
 		\hline
-5x5 & 5 & 1.000000e+00 & 1.719950e-16 & 1.216188e-16\\
+5x5 & 5 & 1 & 1.719950e-16 & 1.216188e-16\\
 \hline
-10x10 & 10 & 1.000000e+00 & 1.683737e-16 & 2.482534e-16\\
+10x10 & 10 & 1 & 1.683737e-16 & 2.482534e-16\\
 \hline
-20x20 & 20 & 1.000000e+00 & 6.030055e-16 & 3.358310e-16\\
+20x20 & 20 & 1 & 6.030055e-16 & 3.358310e-16\\
 \hline
-5x5 & 5 & 1.000000e+01 & 7.021667e-17 & 2.275280e-16\\
+5x5 & 5 & 10 & 7.021667e-17 & 2.275280e-16\\
 \hline
-10x10 & 10 & 1.000000e+01 & 5.790215e-16 & 5.135907e-16\\
+10x10 & 10 & 10 & 5.790215e-16 & 5.135907e-16\\
 \hline
-20x20 & 20 & 1.000000e+01 & 7.739776e-16 & 5.628294e-16\\
+20x20 & 20 & 10 & 7.739776e-16 & 5.628294e-16\\
 \hline
-5x5 & 5 & 1.000000e+03 & 5.248902e-15 & 7.399118e-15\\
+5x5 & 5 & 1e3 & 5.248902e-15 & 7.399118e-15\\
 \hline
-10x10 & 10 & 1.000000e+03 & 2.742085e-14 & 2.134402e-14\\
+10x10 & 10 & 1e3 & 2.742085e-14 & 2.134402e-14\\
 \hline
-20x20 & 20 & 1.000000e+03 & 2.057420e-14 & 2.385714e-14\\
+20x20 & 20 & 1e3 & 2.057420e-14 & 2.385714e-14\\
 \hline
-5x5 & 5 & 1.000000e+07 & 4.948064e-10 & 2.472969e-10\\
+5x5 & 5 & 1e7 & 4.948064e-10 & 2.472969e-10\\
 \hline
-10x10 & 10 & 1.000000e+07 & 3.051511e-10 & 2.871953e-10\\
+10x10 & 10 & 1e7 & 3.051511e-10 & 2.871953e-10\\
 \hline
-20x20 & 20 & 1.000000e+07 & 2.145808e-10 & 2.235508e-10\\
+20x20 & 20 & 1e7 & 2.145808e-10 & 2.235508e-10\\
 \hline
-5x5 & 5 & 1.000017e+12 & 1.729134e-05 & 1.722960e-05\\
+5x5 & 5 & 1e12 & 1.729134e-05 & 1.722960e-05\\
 \hline
-10x10 & 10 & 1.000002e+12 & 3.243992e-05 & 3.472999e-05\\
+10x10 & 10 & 1e12 & 3.243992e-05 & 3.472999e-05\\
 \hline
-20x20 & 20 & 9.999488e+11 & 1.166862e-06 & 3.780269e-06\\
+20x20 & 20 & 1e12 & 1.166862e-06 & 3.780269e-06\\
 \hline
-5x5 & 4 & 7.861517e+15 & 2.092372e-01 & 2.078771e-01\\
+5x5 & 4 & 1e16 & 2.092372e-01 & 2.078771e-01\\
 \hline
-10x10 & 9 & 4.124595e+16 & 1.228583e+00 & 1.310098e+00\\
+10x10 & 9 & 1e16 & 1.228583e+00 & 1.310098e+00\\
 \hline
-20x20 & 19 & 8.132469e+15 & 4.168338e-01 & 4.414028e-01\\
+20x20 & 19 & 1e16 & 4.168338e-01 & 4.414028e-01\\
 \hline
     \end{tabular}
     \caption{Wartości dla losowej macierzy }
 \end{table}
 
 \subsubsection*{Wnioski:}
+Patrząc na wyniki z zadania 3 możemy zaobserwować, że błąd względny bezpośrednio zależy od wskaźnika uwarunkowania macierzy. Patrząc na przykładowe macierze Hilberta oraz losowe o podobnym współczynniku uwarunkowania, możemy zauważyć, że błędy względne są podobnego rzędu. Macierz Hilberta jest bardzo źle uwarunkowana, co skutkuje faktem, że obliczenia z nią wykonane obarczone są dużym błędem. Patrząc na wyniki możemy również zauważyć, że metoda Gaussa w większości przypadków sprawdza się lepiej niż metoda inwersji.
 
 \section{Zadanie 4}
 Zadanie 4 polega na obliczeniu 20 zer wielomianu Wilkinsona $p=(x-20)(x-19)...(x-1)$ w postaci naturalnej P i sprawdzeniu otrzymanych wyników $z_k$ obliczając wartości $|P(z_k)|$, $|p(z_k)|$ i $|z_k-k|$ dla $1 \leq k \leq 20$. Eksperyment należy powtórzyć po zaburzeniu współczynnika $-210$ na $-210-2^{-23}$. W celu rozwiązania zadanie należy użyć pakietu \textbf{Polynomials}.
@@ -356,6 +409,12 @@ Otrzymane wyniki:
 \end{table}
 
 \subsubsection*{Wnioski:}
+W zadaniu 4 możemy zauważyć, że pierwiastki policzone w eksperymencie 1 są bardzo bliskie rzeczywistym wartościom. Po podstawieniu obliczonych pierwiastków do wielomianu uzyskujemy bardzo duże wartości, sięgające nawet rzędu $10^{23}$. Wynika to z faktu, iż pierwiastki z niewielkim błędem obliczeń po podstawieniu do wielomianu są potęgowane i przemnażane przez ogromne wartości sięgające rzędu aż do $1e18$. 
+
+Dodatkowo po wprowadzeniu niewielkiej zmiany współczynnika wynoszącej $2^{-23}$ uzyskujemy zera zespolone w eksperymencie 2.
+
+Wnioskiem z powyższych eksperymentów jest fakt, iż zadanie wyznaczania pierwiastków wielomianu jest źle uwarunkowane ze względu na zaburzenia współczynników.
+
 
 \section{Zadanie 5}
 W zadaniu 5 rozważamy równanie rekurencyjne przedstawiające model wzrostu populacji:
@@ -470,20 +529,25 @@ Wyniki przedstawiam w poniższych tabelach:
     \caption{Wartości dla eksperymentu 2}
 \end{table}
 
+\clearpage
 Powyższe dane w formie wykresów:
-%\begin{figure}[!htb]
-%  \includegraphics[width=\linewidth]{plot_zad5_1.png}
-%  \caption{Eksperyment 1}
-%  \label{fig:figure4}
-%\end{figure}
-%\begin{figure}[!htb]
-%  \includegraphics[width=\linewidth]{plot_zad5_2.png}
-%  \caption{Eksperyment 2}
-%  \label{fig:figure5}
-%\end{figure}
+\begin{figure}[!htb]
+	\centering
+ 	 \includegraphics[width=.7\linewidth]{plot_zad5_2.png}
+ 	 \caption{Eksperyment 1}
+ 	 \label{fig:figure4}
+\end{figure}
+\begin{figure}[!htb]
+  	\centering
+	\includegraphics[width=.7\linewidth]{plot_zad5_1.png}
+  	\caption{Eksperyment 2}
+	 \label{fig:figure5}
+\end{figure}
 
-\newpage
 \subsubsection*{Wnioski:}
+W zadaniu 5 możemy dostrzec, że wprowadzenie niewielkiej zmiany danych dla $n=10$ spowodowało całkowitą rozbieżność danych w pozostałych iteracjach. Podobne zjawisko miało miejsce dla eksperymentu 2, gdzie od pewnej iteracji wartości dla \texttt{Float32} i \texttt{Float64} stały się całkowicie rozbieżne. 
+%Niedokładność $p_n$ przenosi się na $p_{n+1}$ z mnożnikiem wynoszącym co najmniej $r=3$.
+ Niewielkie błędy popełnione w początkowym studium procesu kumulują się w kolejnych stadiach, co pozwala nam uznać proces numeryczny za \texttt{niestabilny}. Zatem obliczone wartości od pewnego $n$ są całkowicie niezgodne z rzeczywistymi. Aby uzyskać dokładniejsze wyniki możemy zwiększać precyzję arytmetyki, jednak dla odpowiednio dużych wartości $n$ zawsze pojawią się rozbieżności. Wynika to z faktu, iż liczba z każdą iteracją zawiera coraz więcej cyfr znaczących, więc zawsze pojawią się błędy zapisu, które następnie będą kumulowane.
 
 \section{Zadanie 6}
 W zadaniu 6 rozważamy równanie rekurencyjne:
@@ -555,9 +619,9 @@ Uzyskane wartości przedstawiają następujące wykresy:
     \label{tab:table8}
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
     		\hline
-    		$n$ & \multicolumn{3}{|c|}{$c=-2$} & \multicolumn{4}{|c|}{$c=-1$}\\
+    		 & \multicolumn{3}{|c|}{$c=-2$} & \multicolumn{4}{|c|}{$c=-1$}\\
     		\hline
-    		$x_0=1$ & $x_0=2$ & $x_0=1.99[...]$ & $x_0=1$ & $x_0=-1$ & $x_0=0.75$ & $x_0=0.25$\\
+    		$n$& $x_0=1$ & $x_0=2$ & $x_0=1.99[...]$ & $x_0=1$ & $x_0=-1$ & $x_0=0.75$ & $x_0=0.25$\\
     		\hline
 0 & 1.0 & 2.0 & 2.000000e+00 & 1.0 & -1.0 & 7.500000e-01 & 2.500000e-01\\
 \hline
@@ -646,24 +710,14 @@ Uzyskane wartości przedstawiają następujące wykresy:
 \end{table}
 \newpage
 \subsubsection*{Wnioski:}
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
-blah blah blah blah blah blah blah blah 
+W eksperymentach 1 i 2 możemy zauważyć że funkcja jest stała na całej dziedzinie (z wyjątkiem wartości początkowej). W eksperymencie 3 niewielkie zaburzenie wartości $x_0$ wprowadziło chaos w kolejnych iteracjach. Możemy zatem uznać proces numeryczny o powyższych parametrach za niestabilny oraz wiemy że obliczone wartości odbiegają od rzeczywistości. W eksperymentach 4 i 5 możemy zauważyć regularność, w obu przypadkach dwie wartości powtarzają się na przemian na całej dziedzinie (z wyjątkiem wartości początkowej). Dla eksperymentów 6 o 7 natomiast możemy zauważyć że funkcja po jakimś czasie zaczyna przyjmować tylko dwie wartości naprzemiennie. W przypadku tym proces numeryczny znajduje się w stanie "perfekcyjnie stabilnym". \cite{chaos} Oznacza to, że arytmetyka o skończonej precyzji nadaje się do obliczenia kolejnych wartości.
+
+\begin{thebibliography}{1}
+\bibitem{chaos}
+Heinz-Otto Peitgen, Hartmut Jürgens, Dietmar Saupe,
+\textit{Chaos and Fractals},
+Springer, 2004, s.37-59
+\end{thebibliography}
 
 
 \end{document}
