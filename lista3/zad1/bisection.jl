@@ -1,12 +1,14 @@
 module Bisection
 export mbisekcji
 
+debug = true
 function mbisekcji(f, a::Float64, b::Float64, delta::Float64, epsilon::Float64)
     f_a = f(a)
     f_b = f(b)
     if (sign(f_a) == sign(f_b))
-        println("DEBUG1: r: undef, v: undef, it: undef, err: 1")
-        return (0, 0, 0, 1)
+        res = ("undef", "undef", "undef", 1)
+        if debug println("DEBUG1a: $(res)") end
+        return res
     end
     it = 0
     e = b-a
@@ -25,8 +27,9 @@ function mbisekcji(f, a::Float64, b::Float64, delta::Float64, epsilon::Float64)
             f_a = v
         end
     end
-    println("DEBUG1: r: $(r), v: $(v), it: $(it), err: 0")
-    return (r, v, it, 0)
+    res = (r, v, it, 0)
+    if debug println("DEBUG1b: $(res)") end
+    return res
 end
 
 end
