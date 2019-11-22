@@ -3,8 +3,11 @@ module zad1_testing
 using Test
 include("../zad1/bisection.jl")
 include("../zad2/newton.jl")
+include("../zad3/sieczne.jl")
 using .Bisection:mbisekcji
 using .Newton:mstycznych
+using .Sieczne:msiecznych
+
 
 @testset "zad1" begin
     value = mbisekcji((x -> x), -1.0, 1.0, 0.1, 0.1)
@@ -25,6 +28,8 @@ using .Newton:mstycznych
     @test value[4] == 0
     @test value[1] < pi+0.1 && value[1] > pi-0.1
     @test value[2] < sin(pi - 0.01) && value[2] > sin(pi + 0.01)
+    
+    println()
 end
 
 @testset "zad2" begin
@@ -53,9 +58,31 @@ end
     @test value[4] == 0
     @test value[1] < 2*pi+0.01 && value[1] > 2*pi-0.01
     @test value[2] < sin(2*pi + 0.01) && value[2] > sin(2*pi - 0.01)
+    
+    println()
 end
 
+@testset "zad3" begin
+    value = msiecznych((x -> x), -1.0, 1.0, 0.1, 0.1, 1000)
+    @test value[4] == 0
+    @test value[1] < 0.1 && value[1] > -0.1
+    @test value[2] < 0.1 && value[2] > -0.1 
 
+    value = msiecznych((x -> x^2), -1.0, 1.0, 0.1, 0.1, 0)
+    @test value[4] == 1
+
+    value = msiecznych((x -> x+1), -1000.0, 100000.0, 0.01, 0.01, 10000)
+    @test value[4] == 0
+    @test value[1] < -0.99 && value[1] > -1.01
+    @test value[2] < 0.01 && value[2] > -0.01
+
+    value = msiecznych((x -> sin(x)), pi/2, 3*pi/2, 0.01, 0.01, 50) 
+    @test value[4] == 0
+    @test value[1] < pi+0.01 && value[1] > pi-0.01
+    @test value[2] < sin(pi - 0.01) && value[2] > sin(pi + 0.01)
+    
+    println()
+end
 
 
 
