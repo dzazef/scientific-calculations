@@ -13,7 +13,7 @@ using .Sieczne:msiecznych
     value = mbisekcji((x -> x), -1.0, 1.0, 0.1, 0.1)
     @test value[4] == 0
     @test value[1] < 0.1 && value[1] > -0.1
-    @test value[3] == 0
+    @test value[3] == 1
     @test value[2] < 0.1 && value[2] > -0.1
 
     value = mbisekcji((x -> x^2), -1.0, 1.0, 0.1, 0.1)

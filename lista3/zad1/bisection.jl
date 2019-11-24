@@ -12,13 +12,16 @@ function mbisekcji(f, a::Float64, b::Float64, delta::Float64, epsilon::Float64)
     end
     it = 0
     e = b-a
-    r = a+(e/2)
-    v = f(r)
-    while (abs(e) > delta && abs(v) > epsilon)
+    while (e > epsilon)
         it += 1
         e = e/2
         r = a+e
         v = f(r)
+        if (abs(e) < delta || abs(v) < epsilon)
+            res = (r, v, it, 0)
+            if debug println("DEBUG1b: $(res)") end
+            return res
+        end
         if (sign(v) != sign(f_a))
             b = r
             f_b = v
@@ -27,9 +30,6 @@ function mbisekcji(f, a::Float64, b::Float64, delta::Float64, epsilon::Float64)
             f_a = v
         end
     end
-    res = (r, v, it, 0)
-    if debug println("DEBUG1b: $(res)") end
-    return res
 end
 
 end

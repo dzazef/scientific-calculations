@@ -10,4 +10,4 @@ g(x) = MathConstants.e^x
 h(x) = f(x) - g(x)
 
 mbisekcji(h, 0.5, 1.0, 1e-4, 1e-4)
-mbisekcji(h, 1.5, 2.0, 1e-4, 1e-4)
+mbisekcji(h, 1.0, 2.0, 1e-4, 1e-4)
