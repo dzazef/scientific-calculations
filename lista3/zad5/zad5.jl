@@ -1,3 +1,5 @@
+# Lista 3: zadanie 5
+# autor: Józef Piechaczek
 include("../zad1/bisection.jl")
 include("../zad2/newton.jl")
 include("../zad3/sieczne.jl")

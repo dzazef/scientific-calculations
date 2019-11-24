@@ -30,6 +30,9 @@
 \setlength{\abovedisplayskip}{5pt}
 \setlength{\belowdisplayskip}{5pt}
 
+\section*{Notatka do zadań 1, 2 i 3}
+Do zadań 1, 2 i 3 zostały napisane funkcje testujące znajdujące się w pliku \texttt{tests.jl}. Testy sprawdzają wartości miejsc zerowych policzone za pomocą danych metod dla funkcji $f_1(x) = x$, $f_2(x)=x^2$, $f_3(x)=x+1$, $f_4(x)=sin x$.
+
 \section{Zadanie 1}
 Zadanie 1 polega na utworzeniu funkcji rozwiązującej równianie $f(x) = 0$ za pomocą metody bisekcji. \textbf{Definicja funkcji:}
 \begin{verbatim}
@@ -54,7 +57,7 @@ epsilon::Float64)
 \end{itemize}
 
 \noindent \textbf{Opis metody:}\\
-Metoda bisekcji korzysta z twierdzenia Darboux do szacowania wartości pierwiastka funkcji. Twierdzenie to mówi, że funkcja ciągła na danym przedziale $[a, b]$ i zmieniająca znak na tym przedziale (co opisuje nierówność $f(a)f(b) < 0$) posiada miejsce zerowe w $[a,b]$. Metoda w pojedynczej iteracji dzieli podany przedział na połowę, obliczając środek przedziału $c=\frac{1}{2}(b-a)$. Następnie obliczamy wartość funkcji w punkcie c, tj. $f(c)$. Sprawdzamy znak wartości $f(c)$ i rozpatrujemy nowy przedział $(a, c)$ albo $(c, b)$ taki, że funkcja zmienia znak w danym przedziale. Metoda kończy działanie w momencie gdy osiągamy zadaną dokładność, tj. przedział jest dostatecznie niewielki lub wartość w punkcie c jest dostatecznie bliska zeru. Metoda ma zbieżność liniową.
+Metoda bisekcji korzysta z twierdzenia Darboux do szacowania wartości pierwiastka funkcji. Twierdzenie to mówi, że funkcja ciągła na danym przedziale $[a, b]$ i zmieniająca znak na tym przedziale (co opisuje nierówność $f(a)f(b) < 0$) posiada miejsce zerowe w $[a,b]$. Metoda w pojedynczej iteracji dzieli podany przedział na połowę, obliczając środek przedziału $c=\frac{1}{2}(b+a)$. Następnie obliczamy wartość funkcji w punkcie c, tj. $f(c)$. Sprawdzamy znak wartości $f(c)$ i rozpatrujemy nowy przedział $(a, c)$ albo $(c, b)$ taki, że funkcja zmienia znak w danym przedziale. Metoda kończy działanie w momencie gdy osiągamy zadaną dokładność, tj. przedział jest dostatecznie niewielki lub wartość w punkcie c jest dostatecznie bliska zeru. Metoda ma zbieżność liniową.
 \\
 \\
 \noindent \textbf{Opis algorytmu:}\\
@@ -212,11 +215,11 @@ f(x)=3x-e^x
 \begin{figure}[!h]
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{zad5_a_plot.png}
-  \caption{Wykres w pyplot dla $y_1$ i $y_2$}\label{fig:figure1}
+  \caption{Wykres w pyplot dla $y_1$ i $y_2$}\label{fig:figure2}
 \endminipage\hfill
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{zad5_b_plot.png}
-  \caption{Wykres w pyplot dla $f(x)$}\label{fig:figure2}
+  \caption{Wykres w pyplot dla $f(x)$}\label{fig:figure3}
 \endminipage
 \end{figure}
 
@@ -241,8 +244,154 @@ Wyniki przedstawia następująca tabela:
 \\
 \\
 \noindent \textbf{Wnioski:}\\
-Algorytm obliczył poszukiwane miejsca zerowe oraz nie zwrócił błędu. Oznacza to że wybraliśmy odpowiednie przedziały. W zadaniu tym główną trudność sprawiało właśnie dobranie odpowiednich przedziałów. W celu znalezienia ich posłużyłem się wykresem funkcji, jednak w przypadku braku dostępu do tego narzędzia musielibyśmy wykonać większą liczbę prób.
+Algorytm obliczył poszukiwane miejsca zerowe oraz nie zwrócił błędu. Oznacza to że wybraliśmy odpowiednie przedziały. W zadaniu tym główną trudność sprawiało właśnie dobranie odpowiednich przedziałów. W celu znalezienia ich posłużyłem się wykresem funkcji, jednak w przypadku braku dostępu do tego narzędzia musielibyśmy wykonać większą liczbę prób lub użyć innego algorytmu.
+
 \section{Zadanie 6}
+Zadanie 6 polega na znalezieniu miejsc zerowych funkcji $f_1(x)=e^{1-x}-1$ oraz $f_2(x)=xe^{-x}$ za pomocą metod bisekcji, Newtona i siecznych. Wymagane dokładności obliczeń wynoszą $\delta=10^{-4}$, $\epsilon=10^{-4}$. Należy dobrać odpowiednio przedział i przybliżenia początkowe. 
+\begin{figure}[!h]
+	\centering
+  \includegraphics[width=0.6\linewidth]{zad6_plot.png}
+  \caption{Wykres w pyplot na przedziale $[-1, 10]$}\label{fig:figure4}
+\end{figure}
+
+Po wstępnej analizie funkcji można w łatwy sposób dostrzec, że funkcja $f_1$ ma miejsce zerowe w $x_0=1$, a funkcja $f_2$ ma miejsce zerowe w $x_0=0$
+
+\noindent \textbf{Wyniki:}\\
+Wyniki przedstawia następujące tabele:
+\begin{table}[h!]
+	\centering
+    \label{tab:table3}
+    \begin{tabular}{c|c|c|c|c}
+		Przedział & Miejsce zerowe $r$ & $f(r)$ & Liczba iteracji & Kod błędu \\
+ 		\hline
+ 		\hline
+ 		\multicolumn{5}{c}{$f_1$}\\
+ 		\hline
+ 		\hline
+		$[0.5, 1.5]$ & 1.0 & 0.0 & 1 & 0\\
+		\hline
+		$[-2.0, 3.0]$ & 0.9999923706054688 & 7.629423635080457e-6 & 17 & 0\\
+		\hline
+		$[-20.0, 10.0]$ & 0.9999942779541016 & 5.722062269342132e-6 & 20 & 0\\
+		\hline
+		$[-2000.0, 3000.0]$ & 1.0000094771385193 & -9.477093611320875e-6 & 27 & 0\\
+		\hline
+		\hline
+ 		\multicolumn{5}{c}{$f_2$}\\
+ 		\hline
+ 		\hline
+ 		$[-0.5, 0.5]$ & 0.0 & 0.0 & 1 & 0\\
+ 		\hline
+ 		$[-2.0, 3.0]$ & 7.62939453125e-6 & 7.62933632381113e-6 & 17 & 0\\
+ 		\hline
+ 		$[-20.0, 15.0]$ & -9.5367431640625e-6 & -9.53683411396636e-6 & 19 & 0\\
+ 		\hline
+		$[-2000.0, 3000.0]$ & 500.0 & 3.562288203370643e-215 & 1 & 0\\
+ 		\hline
+    \end{tabular}
+	\caption{Metoda bisekcji}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+    \label{tab:table4}
+    \begin{tabular}{c|c|c|c|c}
+		$x_0$ & Miejsce zerowe $r$ & $f(r)$ & Liczba iteracji & Kod błędu \\
+ 		\hline
+ 		\hline
+ 		\multicolumn{5}{c}{$f_1$}\\
+ 		\hline
+ 		\hline
+		$1.0$ & 1.0 & 0.0 & 0 & 0\\
+		\hline
+		$5.0$ & 0.9999996427095682 & 3.572904956339329e-7 & 54 & 0\\
+		\hline
+		$6.0$ & 0.9999999573590406 & 4.264096031825204e-8 & 147 & 0\\
+		\hline
+		$7.5$ & 0.9999994332744109 & 5.667257496622113e-7 & 662 & 0\\
+		\hline
+		$10.0$ & - & - & - & 1 \\
+		\hline
+		$100.0$ & - & - & - & 2 \\
+		\hline
+		$1000.0$ & - & - & - & 2 \\
+		\hline
+		\hline
+		\hline
+ 		\multicolumn{5}{c}{$f_2$}\\
+ 		\hline
+ 		\hline
+ 		$0.0$ & 0.0 & 0.0 & 0 & 0\\
+ 		\hline
+ 		$0.5$ & -3.0642493416461764e-7 & -3.0642502806087233e-7 & 5 & 0\\
+ 		\hline
+ 		$1.0$ & - & - & - & 2 \\
+ 		\hline
+ 		$1.01$ & 102.00999999999992 & 5.0846685549318855e-43 & 1 & 0\\
+ 		\hline
+ 		$10.0$ & 14.380524159896261 & 8.173205649825554e-6 & 4 & 0\\
+ 		\hline
+ 		$100.0$ & 100.0 & 3.7200759760208363e-42 & 0 & 0\\
+ 		\hline
+ 		$1000.0$ & 1000.0 & 0.0 & 0 & 0\\
+
+ 		\hline
+    \end{tabular}
+	\caption{Metoda Newtona dla $10^5$ iteracji}
+\end{table}
+
+
+
+\begin{table}[h!]
+	\centering
+    \label{tab:table5}
+    \begin{tabular}{c|c|c|c|c}
+		$x_0$, $x_1$ & Miejsce zerowe $r$ & $f(r)$ & Liczba iteracji & Kod błędu \\
+ 		\hline
+ 		\hline
+ 		\multicolumn{5}{c}{$f_1$}\\
+ 		\hline
+ 		\hline
+		$0.5, 1.5$ & 0.9999999624498374 & 3.755016342310569e-8 & 5 & 0\\
+		\hline
+		$0.0, 3.0$ & 0.999999739048799 & 2.6095123506486573e-7 & 9 & 0\\
+		\hline
+		$-5.0, 5.0$ & 4.975665372740593 & -0.9812331895845449 & 3 & 0\\
+		\hline
+		$-10.0, 10.0$ &9.99966600720658 & -0.999876548971044 & 3 & 0\\
+		\hline
+		$0.0, 100.0$ & - & - & - & 1 \\
+		\hline
+		\hline
+ 		\multicolumn{5}{c}{$f_2$}\\
+ 		\hline
+ 		\hline
+ 		$-0,5, 0.5$ & 5.38073548562323e-6 & 5.380706533386756e-6 & 6 & 0\\
+ 		\hline
+ 		$0.5, 1.5$ & 5.372227830220525e-6 & 5.372198969466189e-6 & 9 & 0\\
+ 		\hline
+ 		$-8.0, 7.0$ & 6.999995985033118 & 0.006383195725973712 & 1 & 0\\
+ 		\hline
+ 		$-10.0, 10.0$ & 9.999999958776927 & 0.0004539993144685704 & 1 & 0\\
+ 		\hline
+ 		$-1.0, 100.0$ & 100.0 & 3.7200759760208363e-42 & 1 & 0\\
+ 		\hline
+    \end{tabular}
+	\caption{Metoda siecznych dla $10^5$ iteracji}
+\end{table}
+\clearpage
+\noindent \textbf{Wnioski:}\\
+\indent W metodzie bisekcji w większości przypadków osiągnęliśmy poszukiwany wynik z zadaną dokładnością, nawet mimo wybierania dużych przedziałów. Jedynym wyjątkiem było obliczanie wartości miejsca zerowego dla przedziału $[-2000, 3000]$ dla $f_2$. Dla danego przedziału otrzymaliśmy wartość $500$. Wynika to z faktu, iż wartość funkcji dla środka przedziału w pierwszej iteracji (czyli właśnie dla $x=500$) jest bardzo bliska zeru i spełnia warunek zakończenia obliczeń $|f(r)| < epsilon$. Zatem stosując metodą bisekcji musimy wybierać przedział ostrożnie w przypadku gdy wartości funkcji są bliskie zeru.
+\\
+\\
+\indent W metodzie Newtona dla funkcji $f_1$ dla niewielkich wartości osiągaliśmy poprawne miejsce zerowe w stosunkowo niewielkiej liczbie operacji. Jednak wraz z wzrostem wartości $x_0$ liczba iteracji gwałtownie wzrasta, chociaż wciąż zwraca poprawny wynik. Wynika to z faktu, iż funkcja dla coraz większych wartości wzrasta w coraz wolniejszym tempie, zbliżając się do funkcji stałej. Zatem dla niektórych wartości nie jesteśmy osiągnąć wyniku w zadanej liczbie iteracji - przykładowo dla $x_0 = 10.0$ otrzymujemy error code 1. Dla jeszcze większych wartości $x_0$ pochodna staję się tak bliska zeru, że otrzymujemy error code 2. 
+
+Dla funkcji $f_2$ metoda zwraca poprawne wartości dla wartości mniejszych od $1$. Dla $x_0=1$ pochodna wynosi zero, więc otrzymujemy error code 2. Dla wartości większych od $1$, nawet minimalnie większych, funkcja okazuje się rozbieżna. Algorytm mimo to jednak zwraca pewne wyniki. Wynika to z faktu, iż podobnie jak w metodzie bisekcji spełniony zostaje warunek zakończenia obliczeń $|f(r)| < epsilon$.
+
+Korzystając z metody Newtona musimy zatem odpowiednio dobierać wartość początkową, tak aby metoda była zbieżna. Musimy również zwrócić szczególną uwagę w przypadku gdy funkcja dąży do zera.
+\\
+\\
+\indent Metoda siecznych zachowała się podobnie do metody Newtona. Dla odpowiednio dobranych wartości początkowych zwracała poprawne miejsce zerowe. W funkcji $f_2$ po wybraniu niektórych wartości kończyła pracę po jednej iteracji ze względu na spełnienie warunku $|f(r)| < epsilon$, zwracając wartości bliskie $x_1$. Jedyną różnicą są rozwiązania dla przedziałów $[-5.0, 5.0]$ i $[-10.0, 10.0]$ w $f_1$. Dla podanych przykładów funkcja zwracała wartości zbliżone do $x_1$ ponieważ krańce przedziałów przyjmowały wartości bardzo odległe od siebie, więc następne wartości $x_n$ znajdowały się blisko wartości $x_1$. Algorytm kończył pracę przez spełnienie warunku $|x_{n+1}-x_n| < delta$. Korzystając z metody siecznych musimy zatem uważać, gdy wybieramy wartości np. dla funkcji, która dąży do zera lub gdy wartości na krańcach przedziału znacznie się różnią.
 
 
 \end{document}

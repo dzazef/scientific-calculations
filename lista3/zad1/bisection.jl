@@ -1,7 +1,22 @@
+# Lista 3: zadanie 1
+# autor: Józef Piechaczek
 module Bisection
 export mbisekcji
 
 debug = true
+
+# Funkcja obliczająca wartość miejsc zerowych funkcji f metodą bisekcji
+# f - funkcja
+# a - początek przedziału
+# b - koniec przedziału
+# delta, epsilon - dokładności obliczeń
+# (r, v, it, err) - wynik, gdzie
+#           r - miejsce zerowe
+#           v - f(r)
+#           it - liczba iteracji
+#           err - kod błędu
+#                 0 - brak błędu
+#                 1 - funkcja nie zmienia znaku na [a, b]
 function mbisekcji(f, a::Float64, b::Float64, delta::Float64, epsilon::Float64)
     f_a = f(a)
     f_b = f(b)
@@ -12,7 +27,7 @@ function mbisekcji(f, a::Float64, b::Float64, delta::Float64, epsilon::Float64)
     end
     it = 0
     e = b-a
-    while (e > epsilon)
+    while (e > delta)
         it += 1
         e = e/2
         r = a+e

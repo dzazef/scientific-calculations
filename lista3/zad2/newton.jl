@@ -1,7 +1,23 @@
+# Lista 3: zadanie 2
+# autor: Józef Piechaczek
 module Newton
 export mstycznych
 
 debug = true
+# Funkcja obliczająca wartość miejsc zerowych funkcji f metodą Newtona
+# f - funkcja
+# pf - pochodna funkcji
+# x0 - przybliżenie początkowe
+# delta, epsilon - dokładności obliczeń
+# maxit - maksymalna liczba iteracji
+# (r, v, it, err) - wynik, gdzie
+#           r - miejsce zerowe
+#           v - f(r)
+#           it - liczba iteracji
+#           err - kod błędu
+#                 0 - brak błędu
+#                 1 - nie osiągnięto dokładności w maxit
+#                 2 - pochodna bliska zeru
 function mstycznych(f, pf, x0::Float64, delta::Float64, epsilon::Float64, maxit::Int)
     v = f(x0)
 

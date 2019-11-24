@@ -1,3 +1,5 @@
+# Lista 3: testy do zadań 1, 2 i 3
+# autor: Józef Piechaczek
 module zad1_testing
 
 using Test

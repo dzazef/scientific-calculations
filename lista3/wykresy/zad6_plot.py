@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 fig = plt.figure()
-x = np.linspace(-1.0, 30, 1000)
+x = np.linspace(-1.0, 10, 1000)
 y = math.e ** (1 - x) - 1
 plt.plot(x, y, 'C0', label='e^(1-x)-1')
 plt.legend()
