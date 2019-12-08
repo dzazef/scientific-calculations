@@ -80,9 +80,10 @@ W celu obliczenia ilorazów korzystamy z następujących zależności:
 \\
 \noindent \textbf{Algorytm:}
 \begin{verbatim}
+l <- length(x)
 fx <- f
-for j=2 to n do
-  for i=n downto j do
+for j=2 to l do
+  for i=l downto j do
     fx[i] <- (fx[i] - fx[i - 1])/(x[i] - x[i - j + 1])
 return fx
 \end{verbatim}
@@ -121,16 +122,53 @@ c_j &= f[x_0, \ldots, x_j] \\
 q_j &= \prod_{i=0}^{j-1} (x-x_i)
 \end{align*}
 
+\noindent Algorytm działa w czasie $O(n)$.
+
 \noindent \textbf{Algorytm:}
 \begin{verbatim}
-n <- length(x)
-nt = fx[n]
-for i=n-1 downto 1
+l <- length(x)
+nt = fx[l]
+for i=l-1 downto 1
   nt = fx[i] + (t - x[i]) * nt
 return nt
 \end{verbatim}
 
+\clearpage
+
 \section{Zadanie 3}
+Znając współczynniki wielomianu interpolacyjnego w postaci Newtona $c_0=f[x_0], c_1=f[x_0, x_1], c_2=f[x_0, x_1, x_2], \ldots ,c_n=f[x_0, \ldots , x_n]$(ilorazy różnicowe) oraz węzły $x_0, x_1, \ldots , x_n$ napisać funkcję obliczającą, w czasie $O(n^2)$, współczynniki jego postaci naturalnej $a_0, \ldots , a_n$ tzn. $a_nx_n+a_{n-1}x^{n-1}+ \ldots +a_1x+a_0$.\\
+\textbf{Definicja funkcji:}
+\begin{verbatim}
+function naturalna (x::Vector{Float64}, fx::Vector{Float64})
+\end{verbatim}
+
+\noindent \textbf{Dane:}
+\begin{itemize}[leftmargin=4.0cm,labelsep=0.4cm]
+\item[$x$] wektor długości $n + 1$ zawierający węzły $x_0, ..., x_n$ \texttt{x[1]}=$x_0$,...,\texttt{x[n+1]}=$x_n$
+\item[$fx$] wektor długości $n+1$ zawierający ilorazy różnicowe \\
+\texttt{fx[1]}=$f[x_0]$\\
+\texttt{fx[2]}=$f[x_0, x_1]$,...,\texttt{fx[n+1]}=$f[x_0,...,x_n]$
+\end{itemize}
+\textbf{Wyniki:} 
+\begin{itemize}[leftmargin=4.0cm,labelsep=0.4cm]
+\item[$a$] wektor długości $n + 1$ zawierający obliczone współczynniki postaci naturalnej \\
+\texttt{a[1]} = $a_0$\\
+\texttt{a[2]} = $a_1$, \ldots, \texttt{a[n]}=$a_{n-1}$, \texttt{a[n+1]}=$a_n$
+\end{itemize}
+
+\noindent \textbf{Opis algorytmu:}\\
+Algorytm korzysta z uogólnionego algorytmu Hornera z poprzedniego zadania. Jako $a_n$ przyjmujemy wartość $f[x_0, \ldots, x_n]$, co da się łatwo wykazać. Następnie w każdej iteracji zewnętrznej pętli obliczamy częściową wartość dla wielomianu, podobnie jak w zadaniu 2, a w wewnętrznej pętli aktualizujemy wartości współczynników tak, aby częściowy wielomian $w_k$ był w postaci naturalnej. Algorytm działa w czasie $O(n^2)$.
+
+\noindent \textbf{Algorytm:}
+\begin{verbatim}
+l <- length(x)
+a[l] <- fx[l]
+for i = (l-1) downto 1
+  a[i] = fx[i] - a[i+1] * x[i]
+  for j = (i+1) to (l-1)
+    a[j] = a[j] - a[j+1] * x[i]
+return a
+\end{verbatim}
 
 \section{Zadanie 4}
 Napisać funkcję, która zinterpoluje zadaną funkcję $f(x)$ w przedziale $[a, b]$ za pomocą wielomianu interpolacyjnego stopnia $n$ w postaci Newtona. Następnie narysuje wielomian interpolacyjny i interpolowaną funkcję. W interpolacji użyć węzłów równoodległych, tj. $x_k=a+kh, h=\frac{b-a}{n}, k= 0,1, \ldots , n$. Nie wyznaczać wielomianu interpolacyjnego w jawnej postaci. Należy skorzystać z funkcji \texttt{ilorazyRoznicowe} i \texttt{warNewton}.
@@ -150,7 +188,7 @@ function rysujNnfx(f,a::Float64,b::Float64,n::Int)
 \end{itemize}
 \textbf{Wyniki:} 
 \begin{itemize}[leftmargin=4.0cm,labelsep=0.4cm]
-\item[c] wykres funkcji interpolowanej i wielomianu interpolacyjnego na przedziale $[a,b]$
+\item[] wykres funkcji interpolowanej i wielomianu interpolacyjnego na przedziale $[a,b]$
 \end{itemize}
 
 
@@ -181,21 +219,21 @@ Przetestować funkcję \texttt{rysujNnfx(f,a,b,n)} na następujących przykłada
 \begin{figure}[!htb]
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_1_15.png}
-  \caption{$e^x, n=5$}
+  \caption{$e^x, n=15$}
 \endminipage\hfill
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_2_5.png}
-  \caption{$x^2sin x, n=10$}
+  \caption{$x^2sin x, n=5$}
 \endminipage
 \end{figure}
 \begin{figure}[!htb]
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_2_10.png}
-  \caption{$x^2sin x, n=5$}
+  \caption{$x^2sin x, n=10$}
 \endminipage\hfill
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_2_15.png}
-  \caption{$x^2sin x, n=10$}
+  \caption{$x^2sin x, n=15$}
 \endminipage
 \end{figure}
 
@@ -227,28 +265,28 @@ Przetestować funkcję \texttt{rysujNnfx(f,a,b,n)} na następujących przykłada
 \begin{figure}[!htb]
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_3_15.png}
-  \caption{$|x|, n=5$}
+  \caption{$|x|, n=15$}
 \endminipage\hfill
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_4_5.png}
-  \caption{$\frac{1}{1+x^2}, n=10$}
+  \caption{$\frac{1}{1+x^2}, n=5$}
 \endminipage
 \end{figure}
+\clearpage
 \begin{figure}[!htb]
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_4_10.png}
-  \caption{$\frac{1}{1+x^2}, n=5$}
+  \caption{$\frac{1}{1+x^2}, n=10$}
 \endminipage\hfill
 \minipage{0.49\textwidth}
   \includegraphics[width=\linewidth]{myplot_4_15.png}
-  \caption{$\frac{1}{1+x^2}, n=10$}
+  \caption{$\frac{1}{1+x^2}, n=15$}
 \endminipage
 \end{figure}
 
-\clearpage
 \noindent \textbf{Wnioski:}\\
-
-
+W przypadku wielomianów interpolujących w zadaniu 6 możemy zauważyć, że wraz ze wzrostem stopnia wielomianu jakość interpolacji ulega pogorszeniu. Jest to szczególnie widoczne na końcach przedziałów. W wypadku pierwszym wynika to z faktu, że funkcja znacząco odbiega od funkcji gładkiej. W drugim przykładzie
+ możemy zaobserwować efekt Rungego, który jest zjawiskiem typowym dla interpolacji za pomocą wielomianów wysokich stopni przy stałych odległościach węzłów. Aby uniknąć tego efektu, możemy stosować interpolację z węzłami upakowanymi gęściej na krańcach przedziału interpolacji.
 
 
 

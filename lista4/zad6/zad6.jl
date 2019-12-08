@@ -1,3 +1,5 @@
+# Lista 4: zadanie 6
+# Autor: Józef Piechaczek
 include("../zad4/zad4.jl")
 using .RysujNnfx:rysujNnfx
 
