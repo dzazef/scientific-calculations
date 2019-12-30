@@ -30,9 +30,6 @@ function parseMatrix(source::String)
     A = sparse(I, J, V, n, n)
     return A, n, l
 end
-# println(parseMatrix("../test_data/Dane16_1_1/A.txt"))
-# (A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
-
 
 # reads vector from file
 # source - path to file
@@ -51,37 +48,15 @@ function parseVector(source::String)
     end
     return V, n
 end
-# println(parseVector("../test_data/Dane50000_1_1/b.txt")[1][2])
-# (b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
 
 
-
-
-
-# calculates min row with non zero element
+# calculates max row with non zero element
 # k - current row
 # l - block size
 # n - matrix size
 # Returns:
-#       x - min row with non zero element
-minRow(k::Int, l::Int, n::Int) = min((k + ((l + 1) - (k + 1) % l)), n)
-
-
-# calculates max column with non zero element
-# k - current column
-# l - block size
-# Returns:
-#       x - max column with non zero element
-maxColumn(k::Int, l::Int, n::Int) = min((k + l), n)
-
-
-# calculates index of (i, j) element
-# i, j - indices
-# n - matrix size
-# Returns:
-#       x - index of (i, j) element
-idx(i::Int, j::Int, n::Int) = (j - 1) * n + i
-
+#       x - max row with non zero element
+maxRow(k::Int, l::Int, n::Int) = min((k + ((l + 1) - (k + 1) % l)), n)
 
 # solves system of linear equations using gaussian elimination
 # A - matrix of coefficients
@@ -91,65 +66,73 @@ idx(i::Int, j::Int, n::Int) = (j - 1) * n + i
 # Returns:
 #       x - solution vector
 function mdfGaussElim(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
+    maxColumn(k::Int, l::Int, n::Int) = min((k + l), n)                     # maximum column with nonzero value
+
     x::Vector{Float64} = zeros(n)
     for i = 1:(n-1)                                                         # iterate over diagonal
-        for j = (i + 1):minRow(i, l, n)                                     # iterate over rows
-            z = A[idx(j, i, n)] / A[idx(i, i, n)]                           # calculate multiplier
-            A[idx(j, i, n)] = 0                                             # zero first considered column in rows
+        for j = (i + 1):maxRow(i, l, n)                                     # iterate over rows
+            z = A[j, i] / A[i, i]                                           # calculate multiplier
+            A[j, i] = 0                                                     # zero first considered column in rows
             for k = (i + 1):maxColumn(i, l, n)                              # iterate over columns
-                A[idx(j, k, n)] = A[idx(j, k, n)] - z * A[idx(i, k, n)]     # calculate new entry in matrix
+                A[j, k] -= z * A[i, k]                                      # calculate new entry in matrix
             end
-            b[j] = b[j] - z * b[i]                                          # calculate new entry in vector
+            b[j] -= z * b[i]                                                # calculate new entry in vector
         end
     end
-    x[n] = b[n] / A[idx(n, n, n)]
+    x[n] = b[n] / A[n, n]                                                   # back substitution                      
     for i = (n - 1):-1:1
         sum = 0.0
         for j = (i + 1):maxColumn(i, l, n)
-            sum += A[idx(i, j, n)] * x[j]
+            sum += A[i, j] * x[j]
         end
-        x[i] = (b[i] - sum) / A[idx(i, i, n)]
+        x[i] = (b[i] - sum) / A[i, i]
     end
     return x
 end
-# x = mdfGaussElim(A, b, l, n)
 
-
-# solves system of linear equations using gaussian elimination with partial pivoting
-# A - matrix of coefficients
-# b - column vector
-# n - matrix size
-# l - block size
-# Returns:
-#       x - solution vector
-function mdfGaussElimPartPivot(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
+function mdfGaussElimPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
+    maxColumn(k::Int, l::Int, n::Int) = min((k + 2 * l), n)                 # maximum column with nonzero value
+    
     x::Vector{Float64} = zeros(n)
-    for i = 1:(n-1)                                                         # iterate over diagonal
-        for j = (i + 1):minRow(i, l, n)                                     # iterate over rows
-            z = A[idx(j, i, n)] / A[idx(i, i, n)]                           # calculate multiplier
-            A[idx(j, i, n)] = 0                                             # zero first considered column in rows
-            for k = (i + 1):maxColumn(i, l, n)                              # iterate over columns
-                A[idx(j, k, n)] = A[idx(j, k, n)] - z * A[idx(i, k, n)]     # calculate new entry in matrix
+    p = collect(1:n)
+    
+    for i = 1:(n-1)                                                         # iterate over diagonal    
+        non_zero_rows = maxRow(i, l, n)                                     # find partial pivot
+        m_row = i
+        m_val = abs(A[i, i])
+        for j = i:non_zero_rows
+            if abs(A[p[j], i]) > m_val
+                m_val = abs(A[p[j], i])
+                m_row = j
             end
-            b[j] = b[j] - z * b[i]                                          # calculate new entry in vector
+        end
+        p[m_row], p[i] = p[i], p[m_row]
+        
+        
+        for j = (i + 1):non_zero_rows                                       # iterate over rows
+            z = A[p[j], i] / A[p[i], i]                                     # calculate multiplier
+            A[p[j], i] = 0                                                  # zero first considered column in rows
+            for k = (i + 1):maxColumn(i, l, n)                              # iterate over columns
+                A[p[j], k] -= z * A[p[i], k]                                # calculate new entry in matrix
+            end
+            b[p[j]] -= z * b[p[i]]                                          # calculate new entry in vector
         end
     end
-    x[n] = b[n] / A[idx(n, n, n)]
+    x[n] = b[p[n]] / A[p[n], n]                                             # back substitution                      
     for i = (n - 1):-1:1
         sum = 0.0
-        for j = (i + 1):maxColumn(i, l, n)
-            sum += A[idx(i, j, n)] * x[j]
+        for j = (i + 1):maxColumn(i, l, n) 
+            sum += A[p[i], j] * x[j]
         end
-        x[i] = (b[i] - sum) / A[idx(i, i, n)]
+        x[i] = (b[p[i]] - sum) / A[p[i], i]
     end
     return x
 end
-# x = mdfGaussElim(A, b, l, n)
 
 
 (A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
 (b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
-x = mdfGaussElim(A, b, l, n)
+x = mdfGaussElimPP(A, b, l, n)
 println(x)
 
 # (A, n, l) = parseMatrix("../test_data/Dane10000_1_1/A.txt")
