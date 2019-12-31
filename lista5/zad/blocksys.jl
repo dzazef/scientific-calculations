@@ -91,7 +91,7 @@ function mdfGaussElim(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
 end
 
 function mdfGaussElimPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
-    maxColumn(k::Int, l::Int, n::Int) = min((k + 2 * l), n)                 # maximum column with nonzero value
+    maxColumn(k::Int, l::Int, n::Int) = min((k + 2 * l)+1, n)                 # maximum column with nonzero value
     
     x::Vector{Float64} = zeros(n)
     p = collect(1:n)
@@ -130,10 +130,80 @@ function mdfGaussElimPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
 end
 
 
-(A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
-(b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
-x = mdfGaussElimPP(A, b, l, n)
-println(x)
+# solves system of linear equations using gaussian elimination
+# A - matrix of coefficients
+# b - column vector
+# n - matrix size
+# l - block size
+# Returns:
+#       x - solution vector
+function mdfLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
+    maxColumn(k::Int, l::Int, n::Int) = min((k + l), n)                     # maximum column with nonzero value
+
+    x::Vector{Float64} = zeros(n)
+    for i = 1:(n-1)                                                         # iterate over diagonal
+        for j = (i + 1):maxRow(i, l, n)                                     # iterate over rows
+            z = A[j, i] / A[i, i]                                           # calculate multiplier
+            A[j, i] = z                                                     # zero first considered column in rows
+            for k = (i + 1):maxColumn(i, l, n)                              # iterate over columns
+                A[j, k] -= z * A[i, k]                                      # calculate new entry in matrix
+            end
+        end
+    end
+    return A
+end
+
+
+function mdfLUPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
+    maxColumn(k::Int, l::Int, n::Int) = min((k + 2 * l)+1, n)                 # maximum column with nonzero value
+    
+    x::Vector{Float64} = zeros(n)
+    p = collect(1:n)
+    
+    for i = 1:(n-1)                                                         # iterate over diagonal    
+        non_zero_rows = maxRow(i, l, n)                                     # find partial pivot
+        m_row = i
+        m_val = abs(A[i, i])
+        for j = i:non_zero_rows
+            if abs(A[p[j], i]) > m_val
+                m_val = abs(A[p[j], i])
+                m_row = j
+            end
+        end
+        p[m_row], p[i] = p[i], p[m_row]
+        
+        for j = (i + 1):non_zero_rows                                       # iterate over rows
+            z = A[p[j], i] / A[p[i], i]                                     # calculate multiplier
+            A[p[j], i] = 0                                                  # zero first considered column in rows
+            for k = (i + 1):maxColumn(i, l, n)                              # iterate over columns
+                A[p[j], k] -= z * A[p[i], k]                                # calculate new entry in matrix
+            end
+        end
+    end
+
+    return A, p
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# (A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
+# (b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
+# x = mdfGaussElimPP(A, b, l, n)
+# println(x)
 
 # (A, n, l) = parseMatrix("../test_data/Dane10000_1_1/A.txt")
 # (b, n) = parseVector("../test_data/Dane10000_1_1/b.txt")
@@ -144,5 +214,10 @@ println(x)
 # (b, n) = parseVector("../test_data/Dane50000_1_1/b.txt")
 # x = mdfGaussElim(A, b, l, n)
 # println(x)
+
+(A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
+(b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
+mdfLU(A, b, l, n)
+
 
 end
