@@ -58,6 +58,7 @@ end
 #       x - max row with non zero element
 maxRow(k::Int, l::Int, n::Int) = min((k + ((l + 1) - (k + 1) % l)), n)
 
+
 # solves system of linear equations using gaussian elimination
 # A - matrix of coefficients
 # b - column vector
@@ -66,7 +67,7 @@ maxRow(k::Int, l::Int, n::Int) = min((k + ((l + 1) - (k + 1) % l)), n)
 # Returns:
 #       x - solution vector
 function mdfGaussElim(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
-    maxColumn(k::Int, l::Int, n::Int) = min((k + l), n)                     # maximum column with nonzero value
+    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + l1), n1)                     # maximum column with nonzero value
 
     x::Vector{Float64} = zeros(n)
     for i = 1:(n-1)                                                         # iterate over diagonal
@@ -90,8 +91,17 @@ function mdfGaussElim(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
     return x
 end
 
+
+
+# solves system of linear equations using gaussian elimination using partial pivoting
+# A - matrix of coefficients
+# b - column vector
+# n - matrix size
+# l - block size
+# Returns:
+#       x - solution vector
 function mdfGaussElimPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
-    maxColumn(k::Int, l::Int, n::Int) = min((k + 2 * l)+1, n)                 # maximum column with nonzero value
+    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + 2 * l1)+1, n1)                 # maximum column with nonzero value
     
     x::Vector{Float64} = zeros(n)
     p = collect(1:n)
@@ -130,15 +140,15 @@ function mdfGaussElimPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
 end
 
 
-# solves system of linear equations using gaussian elimination
+# finds LU decomposition of matrix
 # A - matrix of coefficients
 # b - column vector
 # n - matrix size
 # l - block size
 # Returns:
-#       x - solution vector
+#       A - LU decomposition
 function mdfLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
-    maxColumn(k::Int, l::Int, n::Int) = min((k + l), n)                     # maximum column with nonzero value
+    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + l1), n1)                     # maximum column with nonzero value
 
     x::Vector{Float64} = zeros(n)
     for i = 1:(n-1)                                                         # iterate over diagonal
@@ -154,6 +164,14 @@ function mdfLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
 end
 
 
+# finds LU decomposition of matrix with partial pivoting
+# A - matrix of coefficients
+# b - column vector
+# n - matrix size
+# l - block size
+# Returns:
+#       A - LU decomposition 
+#       p - permutation vector
 function mdfLUPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
     maxColumn(k::Int, l::Int, n::Int) = min((k + 2 * l)+1, n)                 # maximum column with nonzero value
     
@@ -180,9 +198,54 @@ function mdfLUPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
             end
         end
     end
-
     return A, p
 end
+
+
+
+# solves sysyem of linear equations using LU decomposition
+# A - matrix of coefficients
+# b - column vector
+# n - matrix size
+# l - block size
+# Returns:
+#       x - solution vector
+function solveLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
+    y::Vector{Float64} = zeros(n)
+    maxColumn(i::Int, l::Int, n::Int) = min(n, i+l)
+
+    for i = 1:n
+        sum = 0.0
+        for j = 1:(i-1)
+            sum += A[j, i] * y[j]
+        end
+        y[i] = b[i] - sum
+    end
+
+    x::Vector{Float64} = zeros(n)
+    for i = n:-1:1
+        sum = 0.0
+        for j = (i+1):maxColumn(i, l, n)
+            sum += A[j, i] * x[j]
+        end
+        x[i] = (y[i] - sum) / A[i, i]
+    end
+    return x
+end
+
+
+
+# solves sysyem of linear equations using LU decomposition with partial pivoting
+# A - matrix of coefficients
+# b - column vector
+# n - matrix size
+# l - block size
+# p - permutation vector
+# Returns:
+#       x - solution vector
+function solveLUPP(A::SparseMatrixCSC, b::Vector{Float64}, p::Array{Int}, l::Int, n::Int)
+end
+
 
 
 
@@ -218,6 +281,6 @@ end
 (A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
 (b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
 mdfLU(A, b, l, n)
-
+x = solveLU(A, b, l, n)
 
 end
