@@ -237,7 +237,7 @@ Zadanie drugie polega na napisaniu funkcji wyznaczającej rozkład \textbf{LU} m
 
 
 \subsubsection*{Rozkład LU}
-Rozkład \textbf{LU} polega na zastąpieniu macierzy \textbf{A} iloczynem macierzy trójkątnej dolnej oraz trójkątnej górnej $\textbf{A} = \textbf{L}\textbf{U}$. Rozkład można policzyć korzystając z metody eliminacji Gaussa. Aby zaadaptować \textbf{Algorytm \ref{alg1}} do obliczania rozkładu \textbf{LU} należy dokonać trzech modyfikacji: za wartość $a_{ik}$ w pętli 1 przyjąć wartość mnożnika $z$, nie modyfikować wektora $b$ oraz nie wykonywać \textit{podstawienia wstecz}. Obliczanie rozkładu \textbf{LU} umożliwia nam ograniczenie liczby obliczeń w przypadku zmiany wektora $b$, gdyż po zmianie wektora będzie można wykorzystać obliczony już rozkład. Macierze \textbf{L} i \textbf{U} będę przechowywać w wejściowej macierzy \textbf{A}. W tym wypadku macierz \textbf{A} będzie wyglądać następująco:
+Rozkład \textbf{LU} polega na zastąpieniu macierzy \textbf{A} iloczynem macierzy trójkątnej dolnej oraz trójkątnej górnej $\textbf{A} = \textbf{L}\textbf{U}$. Rozkład można policzyć korzystając z metody eliminacji Gaussa. Aby zaadaptować \textbf{Algorytm \ref{alg3}} do obliczania rozkładu \textbf{LU} należy dokonać trzech modyfikacji: za wartość $a_{ik}$ w pętli 1 przyjąć wartość mnożnika $z$, nie modyfikować wektora $b$ oraz nie wykonywać \textit{podstawienia wstecz}. Obliczanie rozkładu \textbf{LU} umożliwia nam ograniczenie liczby obliczeń w przypadku zmiany wektora $b$, gdyż po zmianie wektora będzie można wykorzystać obliczony już rozkład. Macierze \textbf{L} i \textbf{U} będę przechowywać w wejściowej macierzy \textbf{A}. W tym wypadku macierz \textbf{A} będzie wyglądać następująco:
 \begin{equation}
 \textbf{A} = 
 \begin{pmatrix}
@@ -250,7 +250,7 @@ l_{n 1} & l_{n 2} & l_{n 3} & \cdots & u_{n n}\\
 \end{equation}
 przy domniemaniu, że $\forall i \in [n], l_{ii}=1$.
 
-Rozkład \textbf{LU} ma taką samą złożoność obliczeniową jak \textbf{Algorytm \ref{alg1}} wynoszącą $O(n^3)$.
+Rozkład \textbf{LU} ma taką samą złożoność obliczeniową jak \textbf{Algorytm \ref{alg3}} wynoszącą $O(n)$ przy założeniu, że $\ell$ jest stałe.
 \begin{algorithm} % enter the algorithm environment
 \caption{Rozkład LU}
 \label{alg5} % and a label for \ref{} commands later in the document
@@ -271,5 +271,7 @@ Rozkład \textbf{LU} ma taką samą złożoność obliczeniową jak \textbf{Algo
 \end{algorithmic}
 \end{algorithm}
 
+\subsubsection*{Rozkład LU z częściowym wyborem elementów głównych}
+Rozkład \textbf{LU} z częściowym wyborem elementów głównych wygląda analogicznie do \textbf{Algorytmu \ref{alg4}}
 
 \end{document}
