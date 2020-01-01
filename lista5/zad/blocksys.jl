@@ -1,4 +1,5 @@
 module blocksys
+export parseMatrix, parseVector, saveVector, mdfGaussElim, mdfGaussElimPP, mdfLU, mdfLUPP, solveLU, solveLUPP
 
 using SparseArrays
 
@@ -31,6 +32,7 @@ function parseMatrix(source::String)
     return A, n, l
 end
 
+
 # reads vector from file
 # source - path to file
 # Returns:
@@ -47,6 +49,18 @@ function parseVector(source::String)
         end
     end
     return V, n
+end
+
+
+# saves vector from file
+# x - vector to save
+# path - file path
+function saveVector(x::Vector{Float64}, path::String)
+    open(path, "w") do file
+        for i = 1:size(x)[1]
+            write(file, "$(x[i])\n")
+        end
+    end
 end
 
 
@@ -101,7 +115,7 @@ end
 # Returns:
 #       x - solution vector
 function mdfGaussElimPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
-    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + 2 * l1)+1, n1)                 # maximum column with nonzero value
+    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + 2 * l1)+1, n1)         # maximum column with nonzero value
     
     x::Vector{Float64} = zeros(n)
     p = collect(1:n)
@@ -148,7 +162,7 @@ end
 # Returns:
 #       A - LU decomposition
 function mdfLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
-    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + l1), n1)                     # maximum column with nonzero value
+    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + l1), n1)               # maximum column with nonzero value
 
     x::Vector{Float64} = zeros(n)
     for i = 1:(n-1)                                                         # iterate over diagonal
@@ -160,7 +174,6 @@ function mdfLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
             end
         end
     end
-    return A
 end
 
 
@@ -173,7 +186,7 @@ end
 #       A - LU decomposition 
 #       p - permutation vector
 function mdfLUPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
-    maxColumn(k::Int, l::Int, n::Int) = min((k + 2 * l)+1, n)                 # maximum column with nonzero value
+    maxColumn(k1::Int, l1::Int, n1::Int) = min((k1 + 2 * l1)+1, n1)         # maximum column with nonzero value
     
     x::Vector{Float64} = zeros(n)
     p = collect(1:n)
@@ -192,7 +205,7 @@ function mdfLUPP(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
         
         for j = (i + 1):non_zero_rows                                       # iterate over rows
             z = A[p[j], i] / A[p[i], i]                                     # calculate multiplier
-            A[p[j], i] = 0                                                  # zero first considered column in rows
+            A[p[j], i] = z                                                  # zero first considered column in rows
             for k = (i + 1):maxColumn(i, l, n)                              # iterate over columns
                 A[p[j], k] -= z * A[p[i], k]                                # calculate new entry in matrix
             end
@@ -213,11 +226,12 @@ end
 function solveLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
     y::Vector{Float64} = zeros(n)
     maxColumn(i::Int, l::Int, n::Int) = min(n, i+l)
+    minColumn(k::Int, l::Int) = max(1, k - (2 + (k-1)%l))
 
     for i = 1:n
         sum = 0.0
-        for j = 1:(i-1)
-            sum += A[j, i] * y[j]
+        for j = minColumn(i, l):(i-1)
+            sum += A[i, j] * y[j]
         end
         y[i] = b[i] - sum
     end
@@ -226,7 +240,7 @@ function solveLU(A::SparseMatrixCSC, b::Vector{Float64}, l::Int, n::Int)
     for i = n:-1:1
         sum = 0.0
         for j = (i+1):maxColumn(i, l, n)
-            sum += A[j, i] * x[j]
+            sum += A[i, j] * x[j]
         end
         x[i] = (y[i] - sum) / A[i, i]
     end
@@ -235,7 +249,7 @@ end
 
 
 
-# solves sysyem of linear equations using LU decomposition with partial pivoting
+# solves system of linear equations using LU decomposition with partial pivoting
 # A - matrix of coefficients
 # b - column vector
 # n - matrix size
@@ -244,43 +258,27 @@ end
 # Returns:
 #       x - solution vector
 function solveLUPP(A::SparseMatrixCSC, b::Vector{Float64}, p::Array{Int}, l::Int, n::Int)
+    y::Vector{Float64} = zeros(n)
+    maxColumn(i::Int, l::Int, n::Int) = min(n, i+2*l)
+    minColumn(k::Int, l::Int) = max(1, k - (2 + (k-1)%l))
+
+    for i = 1:n
+        sum = 0.0
+        for j = minColumn(i, l):(i-1)
+            sum += A[p[i], j] * y[j]
+        end
+        y[i] = b[p[i]] - sum
+    end
+
+    x::Vector{Float64} = zeros(n)
+    for i = n:-1:1
+        sum = 0.0
+        for j = (i+1):maxColumn(i, l, n)
+            sum += A[p[i], j] * x[j]
+        end
+        x[i] = (y[i] - sum) / A[p[i], i]
+    end
+    return x
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# (A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
-# (b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
-# x = mdfGaussElimPP(A, b, l, n)
-# println(x)
-
-# (A, n, l) = parseMatrix("../test_data/Dane10000_1_1/A.txt")
-# (b, n) = parseVector("../test_data/Dane10000_1_1/b.txt")
-# x = mdfGaussElim(A, b, l, n)
-# println(x)
-
-# (A, n, l) = parseMatrix("../test_data/Dane50000_1_1/A.txt")
-# (b, n) = parseVector("../test_data/Dane50000_1_1/b.txt")
-# x = mdfGaussElim(A, b, l, n)
-# println(x)
-
-(A, n, l) = parseMatrix("../test_data/Dane16_1_1/A.txt")
-(b, n) = parseVector("../test_data/Dane16_1_1/b.txt")
-mdfLU(A, b, l, n)
-x = solveLU(A, b, l, n)
 
 end

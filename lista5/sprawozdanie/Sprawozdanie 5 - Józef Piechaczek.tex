@@ -101,7 +101,7 @@ Standardowy algorytm zamiany do postaci trójkątnej górnej ma złożoność cz
 \caption{Metoda Gaussa}
 \label{alg1} % and a label for \ref{} commands later in the document
 \begin{algorithmic} % enter the algorithmic environment
-    \REQUIRE $n, (a_{ij})$
+    \REQUIRE $n, (a_{ij}), b_i$
     \STATE \{\textbf{Pętla 1}\}
     \FOR{$k=1$ \textbf{to} $n-1$}
     		\STATE \{\textbf{Pętla 2}\}
@@ -129,7 +129,7 @@ Metoda eliminacji Gaussa z częściowym wyborem elementu głównego zawiera jedn
 \caption{Metoda Gaussa z częściowym wyborem elementu głównego}
 \label{alg2} % and a label for \ref{} commands later in the document
 \begin{algorithmic} % enter the algorithmic environment
-    \REQUIRE $n, (a_{ij})$
+    \REQUIRE $n, a_{ij}), b_i$
     \STATE $p \leftarrow [n]$
     \STATE \{\textbf{Pętla 1}\}
     \FOR{$k=1$ \textbf{to} $n-1$}
@@ -177,7 +177,7 @@ Następującego wzoru możemy również użyć przy \textbf{wyborze elementu gł
 \caption{Zmodyfikowana metoda Gaussa}
 \label{alg3} % and a label for \ref{} commands later in the document
 \begin{algorithmic} % enter the algorithmic environment
-    \REQUIRE $n, (a_{ij})$
+    \REQUIRE $n, l, (a_{ij}), b_i$
     \STATE \{\textbf{Pętla 1}\}
     \FOR{$k=1$ \textbf{to} $n-1$}
     		\STATE \{\textbf{Pętla 2}\}
@@ -204,7 +204,7 @@ Następującego wzoru możemy również użyć przy \textbf{wyborze elementu gł
 \caption{Zmodyfikowana metoda Gaussa z częściowym wyborem elementu głównego}
 \label{alg4} % and a label for \ref{} commands later in the document
 \begin{algorithmic} % enter the algorithmic environment
-    \REQUIRE $n, (a_{ij})$
+    \REQUIRE $n, l, (a_{ij}), b_i$
     \STATE $p \leftarrow [n]$
     \STATE \{\textbf{Pętla 1}\}
     \FOR{$k=1$ \textbf{to} $n-1$}
@@ -237,7 +237,7 @@ Zadanie drugie polega na napisaniu funkcji wyznaczającej rozkład \textbf{LU} m
 
 
 \subsubsection*{Rozkład LU}
-Rozkład \textbf{LU} polega na zastąpieniu macierzy \textbf{A} iloczynem macierzy trójkątnej dolnej oraz trójkątnej górnej $\textbf{A} = \textbf{L}\textbf{U}$. Rozkład można policzyć korzystając z metody eliminacji Gaussa. Aby zaadaptować \textbf{Algorytm \ref{alg3}} do obliczania rozkładu \textbf{LU} należy dokonać trzech modyfikacji: za wartość $a_{ik}$ w pętli 1 przyjąć wartość mnożnika $z$, nie modyfikować wektora $b$ oraz nie wykonywać \textit{podstawienia wstecz}. Obliczanie rozkładu \textbf{LU} umożliwia nam ograniczenie liczby obliczeń w przypadku zmiany wektora $b$, gdyż po zmianie wektora będzie można wykorzystać obliczony już rozkład. Macierze \textbf{L} i \textbf{U} będę przechowywać w wejściowej macierzy \textbf{A}. W tym wypadku macierz \textbf{A} będzie wyglądać następująco:
+Rozkład \textbf{LU} polega na zastąpieniu macierzy \textbf{A} iloczynem macierzy trójkątnej dolnej oraz trójkątnej górnej $\textbf{A} = \textbf{L}\textbf{U}$. Rozkład można policzyć korzystając z metody eliminacji Gaussa. Macierz \textbf{L} przechowuje wartości mnożników użytych obliczanych w metodzie Gaussa, a macierz \textbf{U} zredukowaną macierz \textbf{A}. Aby zaadaptować \textbf{Algorytm \ref{alg3}} do obliczania rozkładu \textbf{LU} należy dokonać trzech modyfikacji: za wartość $a_{ik}$ w pętli 1 przyjąć wartość mnożnika $z$, nie modyfikować wektora $b$ oraz nie wykonywać \textit{podstawienia wstecz}. Obliczanie rozkładu \textbf{LU} umożliwia nam ograniczenie liczby obliczeń w przypadku zmiany wektora $b$, gdyż po zmianie wektora będzie można wykorzystać obliczony już rozkład. Macierze \textbf{L} i \textbf{U} będę przechowywać w wejściowej macierzy \textbf{A}. W tym wypadku macierz \textbf{A} będzie wyglądać następująco:
 \begin{equation}
 \textbf{A} = 
 \begin{pmatrix}
@@ -255,7 +255,7 @@ Rozkład \textbf{LU} ma taką samą złożoność obliczeniową jak \textbf{Algo
 \caption{Rozkład LU}
 \label{alg5} % and a label for \ref{} commands later in the document
 \begin{algorithmic} % enter the algorithmic environment
-    \REQUIRE $n, (a_{ij})$
+    \REQUIRE $n, l, (a_{ij}), b_i$
     \STATE \{\textbf{Pętla 1}\}
     \FOR{$k=1$ \textbf{to} $n-1$}
     		\STATE \{\textbf{Pętla 2}\}
@@ -271,7 +271,78 @@ Rozkład \textbf{LU} ma taką samą złożoność obliczeniową jak \textbf{Algo
 \end{algorithmic}
 \end{algorithm}
 
+\clearpage
 \subsubsection*{Rozkład LU z częściowym wyborem elementów głównych}
-Rozkład \textbf{LU} z częściowym wyborem elementów głównych wygląda analogicznie do \textbf{Algorytmu \ref{alg4}}
+Rozkład \textbf{LU} z częściowym wyborem elementów głównych wygląda analogicznie do \textbf{Algorytmu \ref{alg4}}, z modyfikacjami opisanymi wyżej.
+\begin{algorithm} % enter the algorithm environment
+\caption{Rozkład LU z częściowym wyborem elementów głównych}
+\label{alg6} % and a label for \ref{} commands later in the document
+\begin{algorithmic} % enter the algorithmic environment
+    \REQUIRE $n, l, (a_{ij}), b_i$
+    \STATE $p \leftarrow [n]$
+    \STATE \{\textbf{Pętla 1}\}
+    \FOR{$k=1$ \textbf{to} $n-1$}
+		\STATE wybór takiego $j$, że $r_k \geq j \geq k$, że $|a_{p_jk}| \geq |a_{p_kk}|$
+		\STATE $p_j \leftrightarrow p_k$
+    		\STATE \{\textbf{Pętla 2}\}
+		\FOR{$i=k+1$ \textbf{to} $r_k$}
+		\STATE $z \leftarrow a_{p_ik}/a_{p_kk}$
+		\STATE $a_{p_ik} \leftarrow z$
+    			\STATE \{\textbf{Pętla 3}\}
+			\FOR{$j=k+1$ \textbf{to} $c_k$}
+				\STATE $a_{p_ij} \leftarrow a_{p_ij} - z a_{p_kj}$
+    			\ENDFOR
+    		\ENDFOR
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\section{Zadanie 3}
+Zadanie 3 polega na rozwiązaniu układu $\textbf{A}\textbf{x} = \textbf{b}$, jeśli wcześniej został policzony rozkład \textbf{LU}. Zatem obliczenie układu sprowadza się do rozwiązania wyrażenia $\textbf{L} \textbf{U} \textbf{x} = \textbf{b}$. Ponieważ macierze \textbf{L} i \textbf{U} są schodkowe, do rozwiązania użyjemy algorytmu \textit{podstawienia wstecz/w przód}. Zatem rozwiązanie dzieli się na dwa etapy.
+\begin{equation}
+\begin{cases} 
+\textbf{L} \textbf{y} = \textbf{b}\\
+\textbf{U} \textbf{x} = \textbf{y}
+\end{cases}
+\end{equation}
+
+\subsubsection*{Zmodyfikowany algorytm}
+Standardowy algorytm obliczania wartości \textbf{x} przy obliczonym już rozkładzie \textbf{LU} ma złożoność $O(n^2)$. Aby zmniejszyć złożoność musimy zredukować liczbę iteracji podczas sumowania. W wypadku \textit{podstawienia wstecz}, które ma miejsce w drugiej pętli algorytmu użyjemy wcześniej opisanej wartości $c_i$ określającej ostatni element niezerowy w danym wierszu. W wypadku \textit{podstawienia w przód} musimy określić od której kolumny należy zacząć sumowanie. W wypadku pierwszych $\ell$ wierszy sumowanie zaczynamy od pierwszej kolumny, dla następnych $\ell$ wierszy sumowanie zaczynamy od pierwszej niezerowej kolumny macierzy $\textbf{B}_1$, dla następnych $\ell$ od pierwszej niezerowej kolumny macierzy $\textbf{B}_2$ itd. Zatem otrzymujemy następujący wzór na indeks kolumny pierwszego niezerowego elementu w danym wierszu:
+\begin{equation}
+	g_k = min\{1, k - (2 + (k - 1) \% l)\}
+\end{equation}
+Przy założeniu, że $\ell$ jest stałe, złożoność czasowa algorytmu zostaje zredukowana do $O(n)$
+
+\begin{algorithm} % enter the algorithm environment
+\caption{Rozwiązywanie układu równań z obliczonym rozkładem \textbf{LU}}
+\label{alg7} % and a label for \ref{} commands later in the document
+\begin{algorithmic} % enter the algorithmic environment
+    \REQUIRE $n, l, (a_{ij}), b_i$
+    \STATE \{\textbf{Pętla 1}\}
+    \FOR{$i=1$ \textbf{to} $n$}
+		\STATE $y_i \leftarrow b_{i} - \sum^{i-1}_{j=g_i}a_{ij}y_j$
+    \ENDFOR
+    \STATE \{\textbf{Pętla 2}\}
+    \FOR{$i=n$ \textbf{to} $1$ \textbf{step} $-1$}
+		\STATE $x_i \leftarrow (y_{i} - \sum^{c_i}_{j=(i+1)}a_{ij}x_j)/a_{ii}$
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm} % enter the algorithm environment
+\caption{Rozwiązywanie układu równań z obliczonym rozkładem \textbf{LU} z cz. wyborem el. głównego}
+\label{alg8} % and a label for \ref{} commands later in the document
+\begin{algorithmic} % enter the algorithmic environment
+    \REQUIRE $n, l, (a_{ij}), b_i, p_i$
+    \STATE \{\textbf{Pętla 1}\}
+    \FOR{$i=1$ \textbf{to} $n$}
+		\STATE $y_i \leftarrow b_{p_i} - \sum^{i-1}_{j=g_i}a_{p_ij}y_j$
+    \ENDFOR
+    \STATE \{\textbf{Pętla 2}\}
+    \FOR{$i=n$ \textbf{to} $1$ \textbf{step} $-1$}
+		\STATE $x_i \leftarrow (y_{i} - \sum^{c_i}_{j=(i+1)}a_{p_ij}x_j)/a_{p_ii}$
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
 \end{document}
