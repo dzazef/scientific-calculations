@@ -5,7 +5,6 @@ using LinearAlgebra
 
 export  blockmat
 
-
 	function matcond(n::Int, c::Float64)
 		# Function generates a random square matrix A of size n with
 		# a given condition number c.
