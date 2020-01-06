@@ -1,23 +1,27 @@
+# Autor: Józef Piechaczek
 include("../matrix_gen/matrixgen.jl")
 include("../zad/blocksys.jl")
 using .matrixgen:blockmat
 using .blocksys
 using Plots
+using Test
 
 function testGauss(n, l, ck, path, result_path) 
     blockmat(n, l, ck, path)
     (A, l, n) = parseMatrix(path)
     b = calculateB(A, l, n)
-    x = mdfGaussElim(A, b, l, n)
+    (x, _) = mdfGaussElim(A, b, l, n)
     saveVector(x, result_path)
+    return x
 end
 
 function testGaussPP(n, l, ck, path, result_path)
     blockmat(n, l, ck, path)
     (A, l, n) = parseMatrix(path)
     b = calculateB(A, l, n)
-    x = mdfGaussElimPP(A, b, l, n)
+    (x, _) = mdfGaussElimPP(A, b, l, n)
     saveVector(x, result_path)
+    return x
 end
 
 function testLU(n, l, ck, path, result_path)
@@ -25,8 +29,9 @@ function testLU(n, l, ck, path, result_path)
     (A, l, n) = parseMatrix(path)
     b = calculateB(A, l, n)
     mdfLU(A, b, l, n)
-    x = solveLU(A, b, l, n)
+    (x, _) = solveLU(A, b, l, n)
     saveVector(x, result_path)
+    return x
 end
 
 function testLUPP(n, l, ck, path, result_path)
@@ -34,15 +39,23 @@ function testLUPP(n, l, ck, path, result_path)
     (A, l, n) = parseMatrix(path)
     b = calculateB(A, l, n)
     (A, p) = mdfLUPP(A, b, l, n)
-    x = solveLUPP(A, b, p, l, n)
+    (x, _) = solveLUPP(A, b, p, l, n)
     saveVector(x, result_path)
+    return x
 end
 
-function runTests()
-    testGauss(2000, 4, 2.0, "../test_data/other/a1.txt", "../test_data/other/r1.txt")
-    testGaussPP(2000, 4, 2.0, "../test_data/other/a2.txt", "../test_data/other/r2.txt")
-    testLU(2000, 4, 2.0, "../test_data/other/a3.txt", "../test_data/other/r3.txt")
-    testLUPP(2000, 4, 2.0, "../test_data/other/a4.txt", "../test_data/other/r4.txt")
+function runTests(num_min, num_max, step, delta)
+    for i = num_min:step:num_max
+        x = testGauss(i, 4, 2.0, "../test_data/other/a1.txt", "../test_data/other/r1.txt")
+        foreach(value -> if (value < 1.0 - delta || value > 1.0 + delta) error("incorrect value") end, x)
+        x = testGaussPP(i, 4, 2.0, "../test_data/other/a2.txt", "../test_data/other/r2.txt")
+        foreach(value -> if (value < 1.0 - delta || value > 1.0 + delta) error("incorrect value") end, x)
+        x = testLU(i, 4, 2.0, "../test_data/other/a3.txt", "../test_data/other/r3.txt")
+        foreach(value -> if (value < 1.0 - delta || value > 1.0 + delta) error("incorrect value") end, x)
+        x = testLUPP(i, 4, 2.0, "../test_data/other/a4.txt", "../test_data/other/r4.txt")
+        foreach(value -> if (value < 1.0 - delta || value > 1.0 + delta) error("incorrect value") end, x)
+    end
+    println("ok")
 end
 
 function measureTimeGauss(method, num_min, num_max, step, l, ck)
@@ -103,4 +116,5 @@ function runBenchmark(id, num_min, num_max, step, l, ck)
     savefig("plot$(id)_mem.png")
 end
 
-runBenchmark(2, 100, 50000, 50, 5, 20.0)
+# runBenchmark(3, 100, 40000, 25, 5, 20.0)
+runTests(100, 2000, 100, 0.01)

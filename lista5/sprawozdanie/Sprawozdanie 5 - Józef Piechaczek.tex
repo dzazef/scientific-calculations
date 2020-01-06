@@ -169,7 +169,7 @@ W przypadku algorytmu z częściowym wyborem elementu głównego indeks kolumny 
 	c_k = min\{n; k + 2\ell + 1\}
 \end{equation}
 
-Następującego wzoru możemy również użyć przy \textbf{wyborze elementu głównego na początku pętli 1}.
+Wzór $r_k$ należy również użyć przy \textbf{wyborze elementu głównego na początku pętli 1}.
 
 \subsubsection*{Otrzymane algorytmy}
 
@@ -228,6 +228,8 @@ Następującego wzoru możemy również użyć przy \textbf{wyborze elementu gł
 \end{algorithmic}
 \end{algorithm}
 
+Analizując wyżej podany pseudokod, możemy zauważyć, że jedynie \textbf{Pętla 1} jest zależna od $n$, reszta pętli (i sumowań) wykonuje się maksymalnie $2 \ell$ razy, a zatem w czasie stałym. Zatem złożoność obu algorytmów wynosi $O(n)$ 
+
 \section{Zadanie 2}
 Zadanie drugie polega na napisaniu funkcji wyznaczającej rozkład \textbf{LU} macierzy \textbf{A} metodą eliminacji Gaussa uwzględniającą specyficzną postać macierzy \textbf{A} dla dwóch wariantów:
 \begin{enumerate}[(a)]
@@ -237,7 +239,7 @@ Zadanie drugie polega na napisaniu funkcji wyznaczającej rozkład \textbf{LU} m
 
 
 \subsubsection*{Rozkład LU}
-Rozkład \textbf{LU} polega na zastąpieniu macierzy \textbf{A} iloczynem macierzy trójkątnej dolnej oraz trójkątnej górnej $\textbf{A} = \textbf{L}\textbf{U}$. Rozkład można policzyć korzystając z metody eliminacji Gaussa. Macierz \textbf{L} przechowuje wartości mnożników użytych obliczanych w metodzie Gaussa, a macierz \textbf{U} zredukowaną macierz \textbf{A}. Aby zaadaptować \textbf{Algorytm \ref{alg3}} do obliczania rozkładu \textbf{LU} należy dokonać trzech modyfikacji: za wartość $a_{ik}$ w pętli 1 przyjąć wartość mnożnika $z$, nie modyfikować wektora $b$ oraz nie wykonywać \textit{podstawienia wstecz}. Obliczanie rozkładu \textbf{LU} umożliwia nam ograniczenie liczby obliczeń w przypadku zmiany wektora $b$, gdyż po zmianie wektora będzie można wykorzystać obliczony już rozkład. Macierze \textbf{L} i \textbf{U} będę przechowywać w wejściowej macierzy \textbf{A}. W tym wypadku macierz \textbf{A} będzie wyglądać następująco:
+Rozkład \textbf{LU} polega na zastąpieniu macierzy \textbf{A} iloczynem macierzy trójkątnej dolnej oraz trójkątnej górnej $\textbf{A} = \textbf{L}\textbf{U}$. Rozkład można policzyć korzystając z metody eliminacji Gaussa. Macierz \textbf{L} przechowuje wartości mnożników obliczanych w metodzie Gaussa, a macierz \textbf{U} zredukowaną macierz \textbf{A}. Aby zaadaptować \textbf{Algorytm \ref{alg3}} do obliczania rozkładu \textbf{LU} należy dokonać trzech modyfikacji: za wartość $a_{ik}$ w pętli 1 przyjąć wartość mnożnika $z$, nie modyfikować wektora $b$ oraz nie wykonywać \textit{podstawienia wstecz}. Obliczanie rozkładu \textbf{LU} umożliwia nam ograniczenie liczby obliczeń w przypadku zmiany wektora $b$, gdyż po zmianie wektora będzie można wykorzystać obliczony już rozkład. Macierze \textbf{L} i \textbf{U} będę przechowywać w wejściowej macierzy \textbf{A}. W tym wypadku macierz \textbf{A} będzie wyglądać następująco:
 \begin{equation}
 \textbf{A} = 
 \begin{pmatrix}
@@ -344,5 +346,67 @@ Przy założeniu, że $\ell$ jest stałe, złożoność czasowa algorytmu zostaj
     \ENDFOR
 \end{algorithmic}
 \end{algorithm}
+
+\subsection*{Obliczanie wektora b}
+Wektor \textbf{b} obliczmy poprzez równanie $\textbf{b} = \textbf{A} \textbf{x}$, gdzie $x = (1, \dots, 1)^T$. Ze względu na elementy zerowe nie jest konieczna iteracja po wszystkich wartościach, dlatego dla danego wiersza zaczynamy od wcześniej opisanej wartości $g_k$, a kończymy na $c_k$, co pozwala na policzenie wektora \textbf{b} w czasie liniowym.
+
+\section{Wyniki}
+\subsubsection*{Test poprawności}
+W celu poprawności metod wykonano test, polegający na
+\begin{enumerate}
+	\item utworzeniu macierzy za pomocą funkcji \texttt{blockmat}
+	\item wczytaniu macierzy z pliku
+	\item obliczeniu wektora \textbf{b}
+	\item rozwiązaniu układu równań utworzonymi metodami, dla różnych wielkości macierzy \textbf{A}
+	\item sprawdzeniu czy składowe wektora $x$ są bliskie jeden dla danej delty
+\end{enumerate}
+Test nie zwrócił błędu, zatem obliczone wartości są poprawne.
+\subsubsection*{Test złożoności}
+W celu sprawdzania szybkości metod wykonano test polegający na
+\begin{enumerate}
+	\item utworzeniu macierzy za pomocą funkcji \texttt{blockmat}
+	\item wczytaniu macierzy z pliku
+	\item obliczeniu wektora \textbf{b}
+	\item rozwiązaniu układu równań utworzonymi metodami, dla rosnących wielkości macierzy \textbf{A}, mierząc czas rozwiązywania i zaalokowaną pamięć za pomocą makra \texttt{@timed} oraz liczbę operacji
+	\item umieszczeniu zmierzonych wartości na wykresie
+\end{enumerate}
+Wyniki widoczne są na następujących wykresach:
+
+
+\begin{figure}[!htb]
+	\centering
+	\minipage{0.7\textwidth}
+  		\includegraphics[width=\linewidth]{plot3_ops.png}
+  		\caption{Wykres liczby operacji w zależności od $n$}
+	\endminipage
+\end{figure}
+
+\clearpage
+\begin{figure}[!htb]
+	\centering
+	\minipage{0.7\textwidth}
+  		\includegraphics[width=\linewidth]{plot3_time.png}
+  		\caption{Wykres czasu rozwiązywania układu w zależności od $n$}
+	\endminipage
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\minipage{0.7\textwidth}
+  		\includegraphics[width=\linewidth]{plot3_mem.png}
+  		\caption{Wykres zaalokowanej pamięci w zależności od $n$}
+	\endminipage
+\end{figure}
+
+\subsubsection*{Obserwacje i wnioski}
+Na wykresie liczby operacji można zaobserwować liniową złożoność wszystkich algorytmów, co potwierdza wymaganą złożoność algorytmu $O(n)$. Zgodnie z oczekiwaniami, metody z wyborem elementu głównego wymagały większej liczby operacji. Również metody z wcześniej obliczonym rozkładem \textbf{LU} wymagały większej liczby operacji niż eliminacja bez rozkładu. 
+
+Patrząc na wykres czasu od $n$ możemy zauważyć, że wzrasta on kwadratowo względem $n$. Wynika to z czasu dostępu do elementu w macierzy, gdyby czas ten był stały, czas wzrastałby liniowo względem $n$. 
+
+Patrząc na wykres zaalokowanej pamięci dla poszczególnych wykresów, możemy zauważyć, ze metody z wyborem elementu głównego zajmują więcej pamięci, ze względu na konieczność pamiętania tablicy $p$. Metody z rozkładem \textbf{LU} również wymagają większej ilości pamięci, ze względu na konieczność pamiętania przejściowego wektora $y$.
+
+Obserwując wynikowe wektory $x$, które podczas testów były zapisane do plików, można było dostrzec, że składowe dla algorytmów z wyborem elementów głównych były nieznacznie bliższe wartości $1$, co wskazuje na większą dokładność algorytmu. Zatem jeśli dokładność algorytmu jest dla nas ważniejsza niż szybkość, należy użyć algorytmów z wyborem elementów głównych. Algorytm ten również należy wybrać jeśli na diagonali znajdują się zera.
+
+Głównym wnioskiem płynącym z eksperymentu jest fakt, że znając specyfikację danych wejściowych często możemy w łatwy sposób zmodyfikować algorytm, znacznie zwiększając szybkość jego działania.
 
 \end{document}

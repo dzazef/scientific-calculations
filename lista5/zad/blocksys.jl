@@ -7,7 +7,7 @@ using SparseArrays
 # reads matrix from file
 # source - path to file
 # Returns:
-#       A - Smatrix in SparseMatrixCSC format
+#       A - matrix in SparseMatrixCSC format
 #       n - matrix size
 #       l - block size
 function parseMatrix(source::String)
@@ -319,7 +319,7 @@ end
 #       x - solution vector
 function solveLUPP(A::SparseMatrixCSC, b::Vector{Float64}, p::Array{Int}, l::Int, n::Int)
     y::Vector{Float64} = zeros(n)
-    maxColumn(i::Int, l::Int, n::Int) = min(n, i+2*l)
+    maxColumn(i::Int, l::Int, n::Int) = min(n, i+2*l+1)
     minColumn(k::Int, l::Int) = max(1, k - (2 + (k-1)%l))
 
     ops = n
